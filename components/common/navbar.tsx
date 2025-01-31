@@ -14,12 +14,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Menu, Bell } from "lucide-react";
-import Image from "next/image";
-import { NavNotificationDropdown } from "./navbar_dropdown/nav-notification-dropdown";
-import { LoginRegisterDropdown } from "./navbar_dropdown/nav-login-dropdown";
-import Link from "next/link";
 import { cn } from "@/lib/utils"; // Ensure you use your utility function for classnames
+import { Bell, Menu } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { LoginRegisterDropdown } from "./navbar_dropdown/nav-login-dropdown";
+import { NavNotificationDropdown } from "./navbar_dropdown/nav-notification-dropdown";
 import { SearchComponent } from "./search-component";
 interface Props {
   navbarClasses?: string;
@@ -57,12 +57,18 @@ export function Navbar({
             <Link href="#" className="hidden md:block text-sm font-medium">
               VENUE CONSULTATION
             </Link>
-            <Button variant="ghost" className="hidden md:block bg-primaryDark text-white">
+            <Button
+              variant="ghost"
+              className="hidden md:block bg-primaryDark text-white"
+            >
               LIST YOUR VENUE
             </Button>
 
             {/* Currency Selection */}
-            <Button variant="ghost" className="hidden md:inline-flex text-sm font-medium">
+            <Button
+              variant="ghost"
+              className="hidden md:inline-flex text-sm font-medium"
+            >
               THB
             </Button>
 

@@ -1,17 +1,25 @@
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
-  CrownIcon as Luxury,
-  Home,
-  Music,
-  Building2,
-  Trees,
-  Warehouse,
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import {
   Building,
-  Tent,
+  Building2,
+  Home,
   Hotel,
   Landmark,
+  CrownIcon as Luxury,
+  Music,
   StickerIcon as Stadium,
+  Tent,
+  Trees,
+  Warehouse,
   Wine,
 } from "lucide-react";
 
@@ -28,36 +36,41 @@ const categories = [
   { icon: Landmark, label: "Clubhouse" },
   { icon: Stadium, label: "Sports" },
   { icon: Wine, label: "Restaurant" },
-  { icon: Warehouse, label: "Rooftop" },
-  { icon: Building, label: "Hotel" },
-  { icon: Tent, label: "Open Field" },
-  { icon: Hotel, label: "Square" },
-  { icon: Landmark, label: "Clubhouse" },
-  { icon: Stadium, label: "Sports" },
-  { icon: Wine, label: "Restaurant" },
 ];
 
 export function Categories() {
   return (
-    <section className="py-8 px-4 md:px-6">
-      <ScrollArea className="w-full whitespace-nowrap rounded-md">
-        <div className="flex w-max space-x-4 p-4">
+    <section className="py-8 mt-10 px-4 md:px-6">
+      <Carousel
+        opts={{
+          align: "start",
+          loop: true,
+        }}
+        className="w-full container  mx-auto"
+      >
+        <CarouselContent>
           {categories.map((category, index) => {
             const Icon = category.icon;
             return (
-              <Button
-                key={index}
-                variant="ghost"
-                className="flex flex-col items-center p-4 h-auto"
-              >
-                <Icon className="w-6 h-6 mb-2 text-gray-800" />
-                <span className="text-sm text-muted-foreground" >{category.label}</span>
-              </Button>
+              <CarouselItem key={index} className="basis-[20%] lg:basis-[10%]">
+                <div className="p-1 ">
+                  <Button
+                    variant="ghost"
+                    className="flex flex-col items-center justify-center w-full h-24 space-y-2"
+                  >
+                    <Icon className="w-6 h-6 text-gray-800" />
+                    <span className="text-sm text-muted-foreground">
+                      {category.label}
+                    </span>
+                  </Button>
+                </div>
+              </CarouselItem>
             );
           })}
-        </div>
-        <ScrollBar orientation="horizontal" />
-      </ScrollArea>
+        </CarouselContent>
+        <CarouselPrevious className="left-0 xl:left-0" />
+        <CarouselNext className="right-0 xl:right-0" />
+      </Carousel>
     </section>
   );
 }
