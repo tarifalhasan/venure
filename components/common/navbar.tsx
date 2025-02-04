@@ -34,7 +34,7 @@ export function Navbar({
   return (
     <nav
       className={cn(
-        "relative z-50 w-full bg-primaryBlue text-primaryBlue-foreground rounded-br-[60px] md:rounded-br-[80px] md:rounded-bl-[80px] rounded-bl-[60px] flex flex-col",
+        "relative z-50  w-full bg-primaryBlue text-primaryBlue-foreground rounded-br-[60px] md:rounded-br-[80px] md:rounded-bl-[80px] rounded-bl-[60px] flex flex-col",
         navbarClasses
       )}
     >
@@ -109,7 +109,7 @@ export function Navbar({
                   LOGIN / SIGN UP
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="center">
+              <DropdownMenuContent align="end">
                 <LoginRegisterDropdown />
               </DropdownMenuContent>
             </DropdownMenu>

@@ -1,13 +1,13 @@
 // import { auth } from "@/auth";
 import { Toaster } from "@/components/ui/toaster";
+import { generateSEO, generateViewport } from "@/config/seo/seo";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import { Inter } from "next/font/google";
+import "react-phone-input-2/lib/style.css";
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/pagination";
-import { generateSEO, generateViewport } from "@/config/seo/seo";
 import "./globals.css";
-import { Navbar } from "@/components/common/navbar";
 
 const inter = Inter({
   weight: ["400", "500", "700", "900"],

@@ -1,6 +1,5 @@
 "use client";
 
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
   SelectContent,
@@ -8,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowUpDown } from "lucide-react";
 
 interface SearchResultsHeaderProps {
@@ -20,12 +20,12 @@ export function SearchResultsHeader({
   onTabChange,
 }: SearchResultsHeaderProps) {
   return (
-    <div className="w-full my-2">
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div className="w-full px-4">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4">
         {/* Sort Dropdown */}
         <div className="w-full sm:w-auto">
           <Select onValueChange={onSortChange}>
-            <SelectTrigger className="w-full sm:w-[180px]">
+            <SelectTrigger className="">
               <SelectValue
                 placeholder={
                   <div className="flex items-center text-xs">
@@ -47,11 +47,17 @@ export function SearchResultsHeader({
         {/* Tabs */}
         <div className="w-full sm:w-auto">
           <Tabs defaultValue="listings" onValueChange={onTabChange}>
-            <TabsList className="flex w-full sm:w-auto">
-              <TabsTrigger value="listings" className="flex-1 sm:flex-none w-fit">
+            <TabsList className="flex  space-x-1 w-full sm:w-auto">
+              <TabsTrigger
+                value="listings"
+                className="flex-1 sm:flex-none w-fit"
+              >
                 Listings
               </TabsTrigger>
-              <TabsTrigger value="packages" className="flex-1 sm:flex-none w-fit">
+              <TabsTrigger
+                value="packages"
+                className="flex-1 sm:flex-none w-fit"
+              >
                 Packages
               </TabsTrigger>
             </TabsList>

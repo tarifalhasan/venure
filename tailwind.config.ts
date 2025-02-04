@@ -12,6 +12,13 @@ export default {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1440px",
+      },
+    },
     extend: {
       colors: {
         primaryDark: {
@@ -28,6 +35,9 @@ export default {
           DEFAULT: PRIMARY_ORANGE,
           hover: "#CC8400", // Hover color (slightly darker)
           foreground: "#ffffff", // Define a contrasting foreground color
+        },
+        skin: {
+          black: "#343A3F",
         },
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
@@ -79,6 +89,11 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+      },
+      boxShadow: {
+        "3xl": "0px 6px 16px 0px rgba(0, 0, 0, 0.12)",
+        "2xl":
+          "0px 2px 4px 0px rgba(58, 92, 144, 0.14), 0px 3px 4px 0px rgba(58, 92, 144, 0.12), 0px 1px 5px 0px rgba(58, 92, 144, 0.20)",
       },
       borderRadius: {
         lg: "var(--radius)",
