@@ -3,17 +3,14 @@
 import { Footer } from "@/components/common/footer";
 import { Navbar } from "@/components/common/navbar";
 import { Newsletter } from "@/components/common/news-letter";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { DefaultCardPlaceHolderImage } from "@/constants/data";
-import { Heart, MapPin, Star, Users } from "lucide-react";
-import Image from "next/image";
+import { Star } from "lucide-react";
 import { SearchHeader } from "./_components/search-header";
 import { SearchResultsHeader } from "./_components/search-results-header";
 import { VenueFilters } from "./_components/venue-filters";
 import { VenueResultsPagination } from "./_components/venue-results-pagination";
+import VenueCard from "./_components/VenueCard";
 
 export default function SearchResults() {
   return (
@@ -56,74 +53,25 @@ export default function SearchResults() {
               onSortChange={(value) => console.log(value)}
               onTabChange={(value) => console.log(value)}
             />
-            <div className="grid gap-6">
+            <div className="grid flex-1 gap-6">
               {[1, 2, 3, 4].map((venue) => (
-                <Card key={venue} className="overflow-hidden">
-                  <CardContent className="p-0">
-                    <div className="grid md:grid-cols-[300px_1fr] gap-4">
-                      <div className="relative aspect-[4/3]">
-                        <Image
-                          src={DefaultCardPlaceHolderImage}
-                          alt="Venue image"
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      <div className="w-full p-6 relative">
-                        <div className="w-full flex items-start justify-between">
-                          <div>
-                            <h3 className="text-xl font-semibold mb-1">
-                              Grand Ballroom
-                            </h3>
-                            <p className="text-muted-foreground">
-                              Shangri-La, Bangkok
-                            </p>
-                            <p className="text-muted-foreground flex items-center">
-                              <MapPin className="w-4 h-4 mr-2" /> Bangkok,
-                              Thailand
-                            </p>{" "}
-                            <p className="text-sm text-muted-foreground">
-                              Hotel
-                            </p>
-                          </div>
-                          <Button variant="ghost" size="icon">
-                            <Heart className="w-5 h-5" />
-                          </Button>
-                        </div>
-                        <Card className="w-full flex items-center justify-between gap-4 mt-4 md:absolute bottom-2 right-0 p-2">
-                          <div className="flex items-center gap-1">
-                            <div className="flex flex-col ">
-                              <div className="ml-2 mb-2 flex  gap-1">
-                                <Users className="w-4 h-4" />
-
-                                <p className="text-sm text-gray-500">
-                                  {" "}
-                                  120-1000
-                                </p>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <Button className="btn-primary-orange text-white">
-                                  <Star className="w-4 h-4 " />
-                                  <span className="text-sm">4.8</span>
-                                </Button>
-                                <span className="text-sm text-muted-foreground">
-                                  (2,228 Reviews)
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex flex-col items-end text-sm">
-                            <Badge variant={"destructive"}>50% Off</Badge>
-                            <span className="text-muted-foreground line-through">
-                              THB 120,000
-                            </span>
-                            <span className="font-semibold">THB 120,000</span>
-                          </div>
-                        </Card>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                <VenueCard
+                  key={venue}
+                  name="Grand Ballroom"
+                  location="Shangri-La, Bangkok"
+                  type="Hotel"
+                  capacity="120-1000"
+                  rating={4.3}
+                  reviews={2228}
+                  price={140000}
+                  discountPrice={120000}
+                  discountPercent={15}
+                  images={[
+                    "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    "https://images.unsplash.com/photo-1492889971304-ac16ab4a4a5a?q=80&w=2074&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    "https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                  ]}
+                />
               ))}
               <VenueResultsPagination />
             </div>

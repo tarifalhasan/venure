@@ -69,7 +69,7 @@ body {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply overflow-x-hidden max-w-[100vw] bg-background text-foreground;
   }
 }
 

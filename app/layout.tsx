@@ -28,16 +28,15 @@ export default async function RootLayout({
   return (
     <html lang="en" className="light" suppressHydrationWarning>
       <body
-        className={`${inter.variable} antialiased min-h-screen flex flex-col w-full`} // Use Inter font here
+        className={`${inter.className} bg-background antialiased`} // Use Inter font here
       >
-        <div className="flex-grow ">
-          {/* <SessionProvider session={session}> */}
-          <ReactQueryProvider>
-            {/* <Navbar /> */}
-            {children}
-          </ReactQueryProvider>
-          {/* </SessionProvider> */}
-        </div>
+        {/* <SessionProvider session={session}> */}
+        <ReactQueryProvider>
+          {/* <Navbar /> */}
+          {children}
+        </ReactQueryProvider>
+        {/* </SessionProvider> */}
+
         <Toaster />
       </body>
     </html>

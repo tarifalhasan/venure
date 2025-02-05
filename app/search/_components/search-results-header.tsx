@@ -23,7 +23,7 @@ export function SearchResultsHeader({
     <div className="w-full px-4">
       <div className="flex flex-col md:flex-row items-center justify-between gap-4">
         {/* Sort Dropdown */}
-        <div className="w-full sm:w-auto">
+        <div className="w-full sm:w-[190px]">
           <Select onValueChange={onSortChange}>
             <SelectTrigger className="">
               <SelectValue
@@ -47,16 +47,16 @@ export function SearchResultsHeader({
         {/* Tabs */}
         <div className="w-full sm:w-auto">
           <Tabs defaultValue="listings" onValueChange={onTabChange}>
-            <TabsList className="flex  space-x-1 w-full sm:w-auto">
+            <TabsList className="flex  bg-gray-100 shadow-3xl px-4 rounded-full backdrop-blur-[100px] py-2 h-12 space-x-1 w-full sm:w-auto">
               <TabsTrigger
                 value="listings"
-                className="flex-1 sm:flex-none w-fit"
+                className="flex-1 rounded-full data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-[0px_2px_16px 0px_rgba(0, 0, 0, 0.08] border-0 px-4 border-gray-200 sm:flex-none w-fit"
               >
                 Listings
               </TabsTrigger>
               <TabsTrigger
                 value="packages"
-                className="flex-1 sm:flex-none w-fit"
+                className="flex-1 rounded-full data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-[0px_2px_16px 0px_rgba(0, 0, 0, 0.08] border-0 px-4 border-gray-200 sm:flex-none w-fit"
               >
                 Packages
               </TabsTrigger>

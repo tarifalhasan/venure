@@ -1,10 +1,10 @@
 "use client";
 
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import type { Venue } from "@/types/search";
 import { Heart, Star } from "lucide-react";
 import Image from "next/image";
-import type { Venue} from "@/types/search";
 
 interface VenueResultsProps {
   venues: Venue[];
@@ -36,7 +36,9 @@ export function VenueResults({ venues, isLoading }: VenueResultsProps) {
                     <h3 className="text-xl font-semibold mb-1">{venue.name}</h3>
                     <p className="text-muted-foreground">{venue.location}</p>
                     <p className="text-muted-foreground">Bangkok, Thailand</p>
-                    <p className="text-sm text-muted-foreground">{venue.type}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {venue.type}
+                    </p>
                   </div>
                   <Button variant="ghost" size="icon">
                     <Heart className="w-5 h-5" />
@@ -55,7 +57,9 @@ export function VenueResults({ venues, isLoading }: VenueResultsProps) {
                 </span>
               </div>
               <div className="text-sm">
-                <span className="font-semibold">THB {venue.price.toLocaleString()}</span>
+                <span className="font-semibold">
+                  THB {venue.price.toLocaleString()}
+                </span>
               </div>
             </div>
           </CardFooter>
@@ -67,7 +71,6 @@ export function VenueResults({ venues, isLoading }: VenueResultsProps) {
   );
 }
 
-import React from "react";
 import { VenueResultsPagination } from "./venue-results-pagination";
 
 const VenueResultsSkeleton = () => {

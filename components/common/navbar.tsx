@@ -20,16 +20,18 @@ import Image from "next/image";
 import Link from "next/link";
 import { LoginRegisterDropdown } from "./navbar_dropdown/nav-login-dropdown";
 import { NavNotificationDropdown } from "./navbar_dropdown/nav-notification-dropdown";
-import { SearchComponent } from "./search-component";
+import { SearchForm } from "./NewSearchComponent";
 interface Props {
   navbarClasses?: string;
   searchComponentWrapperClasses?: string;
   children?: React.ReactNode;
+  showSearchBar?: boolean;
 }
 export function Navbar({
   children,
   navbarClasses,
   searchComponentWrapperClasses,
+  showSearchBar = true,
 }: Props) {
   return (
     <nav
@@ -145,17 +147,18 @@ export function Navbar({
         </div>
 
         {/* Optional Children */}
-        {children && <div className="w-full flex-1">{children}</div>}
+        {/* {children && <div className="w-full flex-1">{children}</div>} */}
 
-        {/* Search Component (Properly Positioned) */}
-        <div
-          className={cn(
-            "md:mt-4 w-full mx-auto max-w-4xl md:px-4 md:mb-[-2.4rem]",
-            searchComponentWrapperClasses
-          )}
-        >
-          <SearchComponent />
-        </div>
+        {showSearchBar && (
+          <div
+            className={cn(
+              "md:mt-4 w-full mx-auto  md:px-4 md:mb-[-2.4rem]",
+              searchComponentWrapperClasses
+            )}
+          >
+            <SearchForm />
+          </div>
+        )}
       </div>
     </nav>
   );

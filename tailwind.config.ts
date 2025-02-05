@@ -20,6 +20,9 @@ export default {
       },
     },
     extend: {
+      backgroundImage: {
+        tab: "linear-gradient(0deg, #333 0%, #333 100%), rgba(166, 166, 166, 0.61)",
+      },
       colors: {
         primaryDark: {
           DEFAULT: PRIMARY_DARK, // For bg-primaryDark text-primaryDark-foreground and text-primaryDark
@@ -38,6 +41,8 @@ export default {
         },
         skin: {
           black: "#343A3F",
+          shade_gray_900: "#21272A",
+          shade_gray_50: "#878D96",
         },
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
