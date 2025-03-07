@@ -1,5 +1,6 @@
-import React from "react";
-import { Button } from "@/components/ui/button"; // Assuming the Button component is imported
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { RefreshCcw } from "lucide-react";
 import { PartnerCard, type PartnerTypeEnum } from "./PartnerCard"; // Assuming PartnerCard is imported
 
 const partnersData = [
@@ -15,12 +16,26 @@ const partnersData = [
 
 const Partners = () => {
   return (
-    <div id="Partners">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-sm md:text-xl font-semibold">Powered by our trusted partners</h2>
-        <Button variant="outline">SHOW ALL</Button>
+    <Card className="p-4" id="Partners">
+      <div className="flex justify-between gap-5 flex-wrap items-center mb-6">
+        <h2 className="text-sm md:text-xl font-semibold">
+          We recommend these vendors for you:
+        </h2>
+        <div className="inline-flex flex-wrap items-center gap-5 lg:gap-3">
+          <p className="text-xs text-skin-black font-semibold">
+            Looking for some more vendors?
+          </p>
+          <Button className="bg-skin-yellow_600 shadow-elevation hover:bg-skin-yellow_600/90 font-semibold text-white text-xs h-8">
+            <RefreshCcw />
+            Refresh
+          </Button>
+          <p className="text-xs text-skin-black font-semibold">or</p>
+          <Button className="bg-skin-yellow_600 shadow-elevation hover:bg-skin-yellow_600/90 font-semibold text-white text-xs h-8">
+            Browse all vendors
+          </Button>
+        </div>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 md:grid-cols-4 2xl:grid-cols-5 gap-4">
         {partnersData.map((partner, index) => (
           <PartnerCard
             key={index}
@@ -30,7 +45,7 @@ const Partners = () => {
           />
         ))}
       </div>
-    </div>
+    </Card>
   );
 };
 

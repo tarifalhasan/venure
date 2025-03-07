@@ -1,12 +1,13 @@
 "use client";
 
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
+import { Card } from "@/components/ui/card";
+import { useIsMobile } from "@/hooks/use-mobile";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { Navigation, Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 import { SpaceCard } from "./SpaceCard";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 const spaces = [
   {
@@ -43,22 +44,13 @@ const spaces = [
 ];
 
 export default function SpaceSelector() {
-  const isMobile=useIsMobile()
+  const isMobile = useIsMobile();
   return (
-    <div id="Space Size" className="w-full max-w-6xl mx-auto px-4 py-8">
-      <div className="space-y-6 mb-8">
-        <h2 className="text-xl font-semibold">Space Size</h2>
-        <div className="space-y-1">
-          <p className="text-sm">Venu Size: 2400 sqm</p>
-          <p className="text-sm">Stage Size: 200 sqm</p>
-        </div>
-        <p className="text-sm font-medium">This Space is Expandable:</p>
-      </div>
-
+    <Card id="Space Size" className="w-full p-4">
       <Swiper
         modules={[Navigation, Pagination]}
         spaceBetween={20} // Controls the space between slides
-        slidesPerView={isMobile?1:2} // Three slides per view
+        slidesPerView={isMobile ? 1 : 2} // Three slides per view
         navigation
         pagination={{ clickable: true }}
         className="py-6"
@@ -69,6 +61,6 @@ export default function SpaceSelector() {
           </SwiperSlide>
         ))}
       </Swiper>
-    </div>
+    </Card>
   );
 }

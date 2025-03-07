@@ -3,14 +3,24 @@ import { Card, CardContent } from "@/components/ui/card";
 import { clsx } from "clsx";
 import { useEffect, useState } from "react";
 
-const tabs = ["Overview", "Space Size", "Details", "Features", "Packages", "Reviews"];
+const tabs = [
+  "Overview",
+  "Space Size",
+  "Details",
+  "Features",
+  "Packages",
+  "Reviews",
+];
 
 interface NavigationTabsProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
 }
 
-export const NavigationTabs = ({ activeTab, onTabChange }: NavigationTabsProps) => {
+export const NavigationTabs = ({
+  activeTab,
+  onTabChange,
+}: NavigationTabsProps) => {
   const [activeSection, setActiveSection] = useState<string>(activeTab);
 
   useEffect(() => {
