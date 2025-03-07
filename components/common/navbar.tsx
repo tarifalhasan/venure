@@ -147,7 +147,7 @@ export function Navbar({
         </div>
 
         {/* Optional Children */}
-        {/* {children && <div className="w-full flex-1">{children}</div>} */}
+        {children && <div className="w-full flex-1">{children}</div>}
 
         {showSearchBar && (
           <div

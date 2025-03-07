@@ -91,15 +91,15 @@ body {
   @apply text-lg font-bold !important;
 }
 .swiper-pagination-bullets {
-  @apply absolute bottom-[0px] flex items-center  border rounded-full border-gray-400 w-auto px-4 py-2.5 left-1/2 -translate-x-1/2 !important;
+  @apply absolute bottom-[0px] flex items-center  border rounded-full border-black/10 w-auto  px-4 py-2.5 left-1/2 -translate-x-1/2 !important;
 }
 /* Swiper Pagination */
 .swiper-pagination-bullet {
-  @apply h-3  w-3 bg-gray-400  border border-white opacity-70 transition-all duration-300 hover:opacity-100 ring-2 ring-gray-300 hover:ring-gray-500 !important;
+  @apply h-3  w-3 bg-transparent border scale-100   border-[#343A3F] opacity-70 transition-all duration-300 hover:opacity-100   !important;
 }
 
 .swiper-pagination-bullet-active {
-  @apply bg-black opacity-100 scale-110 ring-2 ring-black !important;
+  @apply bg-[#343A3F] !opacity-100 scale-100 ring-2 ring-[#343A3F] !important;
 }
 
 .swiper {
