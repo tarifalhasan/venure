@@ -1,11 +1,11 @@
-import React from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { Navigation, Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 import { ReviewCard } from "./ReviewCard";
-import { Button } from "@/components/ui/button";
 
 const reviews = [
   {
@@ -28,7 +28,8 @@ const reviews = [
     name: "Sophia",
     date: "June 2024",
     rating: 5,
-    review: "A hidden gem! Loved the private beach and the amazing sunset views.",
+    review:
+      "A hidden gem! Loved the private beach and the amazing sunset views.",
     yearsAgo: 7,
   },
   {
@@ -42,17 +43,22 @@ const reviews = [
     name: "Emily",
     date: "April 2024",
     rating: 5,
-    review: "Perfect getaway! Excellent service, delicious food, and stunning location.",
+    review:
+      "Perfect getaway! Excellent service, delicious food, and stunning location.",
     yearsAgo: 5,
   },
 ];
 
 const Reviews = () => {
   return (
-    <div id="Reviews" className="w-full">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold">Reviews</h2>
-        <Button variant="outline">SHOW ALL</Button>
+    <Card id="Reviews" className="w-full p-4">
+      <div className="flex flex-wrap items-center justify-between">
+        <h2 className="text-lg font-semibold text-skin-black tracking-[-0.36px]">
+          Packages: Food & Beverages
+        </h2>
+        <Button className="text-sm text-[#343A3F] font-bold uppercase bg-transparent border border-[#343A3F] hover:text-white h-10 rounded-[8px]">
+          show all
+        </Button>
       </div>
       <Swiper
         modules={[Navigation, Pagination]}
@@ -73,7 +79,7 @@ const Reviews = () => {
           </SwiperSlide>
         ))}
       </Swiper>
-    </div>
+    </Card>
   );
 };
 

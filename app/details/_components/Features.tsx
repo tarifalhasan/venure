@@ -22,72 +22,71 @@ export default function HotelFeatures() {
         </div>
       </div>
 
-      <div className="flex items-center  gap-6  mb-4">
-        <div className="inline-flex items-start">
+      <div className="grid grid-cols-1 md:grid-cols-3  gap-6  mb-4">
+        <div className="flex items-start">
           <div className="w-6 h-6 mr-3 text-green-600">
             <Pool className="w-6 h-6" />
           </div>
           <span className="text-gray-800">Outdoor swimming pool</span>
         </div>
 
-        <div className="inline-flex items-start">
+        <div className="flex items-start">
           <div className="w-6 h-6 mr-3 text-green-600">
             <Cigarette className="w-6 h-6" strokeWidth={1.5} />
           </div>
           <span className="text-gray-800">Non-smoking rooms</span>
         </div>
 
-        <div className="inline-flex items-start">
+        <div className="flex items-start">
           <div className="w-6 h-6 mr-3 text-green-600">
             <Dumbbell className="w-6 h-6" />
           </div>
           <span className="text-gray-800">Fitness center</span>
         </div>
 
-        <div className="inline-flex items-start">
+        <div className="flex items-start">
           <div className="w-6 h-6 mr-3 text-green-600">
             <Parking className="w-6 h-6" />
           </div>
           <span className="text-gray-800">Free parking</span>
         </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <div className="inline-flex items-start">
+        <div className="flex items-start">
           <div className="w-6 h-6 mr-3 text-green-600">
             <BellRing className="w-6 h-6" />
           </div>
           <span className="text-gray-800">Room service</span>
         </div>
 
-        <div className="inline-flex items-start">
+        <div className="flex items-start">
           <div className="w-6 h-6 mr-3 text-green-600">
             <Utensils className="w-6 h-6" />
           </div>
           <span className="text-gray-800">2 restaurants</span>
         </div>
 
-        <div className="inline-flex items-start">
+        <div className="flex items-start">
           <div className="w-6 h-6 mr-3 text-green-600">
             <Wifi className="w-6 h-6" />
           </div>
           <span className="text-gray-800">Free Wifi</span>
         </div>
 
-        <div className="inline-flex items-start">
+        <div className="flex items-start">
           <div className="w-6 h-6 mr-3 text-green-600">
             <Coffee className="w-6 h-6" />
           </div>
           <span className="text-gray-800">Tea/Coffee Maker in All Rooms</span>
         </div>
 
-        <div className="inline-flex items-start">
+        <div className="flex items-start">
           <div className="w-6 h-6 mr-3 text-green-600">
             <Martini className="w-6 h-6" />
           </div>
           <span className="text-gray-800">Bar</span>
         </div>
       </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4"></div>
     </div>
   );
 }

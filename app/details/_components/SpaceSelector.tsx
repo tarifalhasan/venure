@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useIsMobile } from "@/hooks/use-mobile";
 import "swiper/css";
@@ -47,6 +48,14 @@ export default function SpaceSelector() {
   const isMobile = useIsMobile();
   return (
     <Card id="Space Size" className="w-full p-4">
+      <div className="flex flex-wrap items-center justify-between">
+        <h2 className="text-lg font-semibold text-skin-black tracking-[-0.36px]">
+          View Floor Plan
+        </h2>
+        <Button className="text-sm text-[#343A3F] font-bold uppercase bg-transparent border border-[#343A3F] hover:text-white h-10 rounded-[8px]">
+          show all
+        </Button>
+      </div>
       <Swiper
         modules={[Navigation, Pagination]}
         spaceBetween={20} // Controls the space between slides

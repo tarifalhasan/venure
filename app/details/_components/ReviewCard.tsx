@@ -1,5 +1,5 @@
-import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Card, CardContent } from "@/components/ui/card";
 import { Star } from "lucide-react";
 
 interface ReviewCardProps {
@@ -10,10 +10,16 @@ interface ReviewCardProps {
   yearsAgo: number;
 }
 
-export const ReviewCard = ({ name, date, rating, review, yearsAgo }: ReviewCardProps) => {
+export const ReviewCard = ({
+  name,
+  date,
+  rating,
+  review,
+  yearsAgo,
+}: ReviewCardProps) => {
   return (
     <Card>
-      <CardContent className="p-4">
+      <CardContent className="p-4 flex flex-col gap-y-4">
         <div className="flex items-center gap-3 mb-2">
           <Avatar>
             <AvatarFallback>{name[0]}</AvatarFallback>
@@ -27,7 +33,9 @@ export const ReviewCard = ({ name, date, rating, review, yearsAgo }: ReviewCardP
           {Array.from({ length: 5 }).map((_, i) => (
             <Star
               key={i}
-              className={`w-4 h-4 ${i < rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
+              className={`w-4 h-4 ${
+                i < rating ? "text-black fill-black" : "text-gray-300"
+              }`}
             />
           ))}
           <span className="text-sm text-gray-500 ml-2">{date}</span>

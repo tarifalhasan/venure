@@ -9,7 +9,6 @@ import Partners from "./_components/Partners";
 import Reviews from "./_components/Reviews";
 import { Sidebar } from "./_components/Sidebar";
 import SpaceSelector from "./_components/SpaceSelector";
-import { VenueFeatures } from "./_components/VenueFeatures";
 import { VenueImageSlider } from "./_components/VenueImageSlider";
 
 function App() {
@@ -68,7 +67,6 @@ function App() {
             </Card>
             <HotelFeatures />
             <SpaceSelector />
-            <VenueFeatures />
             {/* Packages & Food & Beverages */}
             <Packages />
 

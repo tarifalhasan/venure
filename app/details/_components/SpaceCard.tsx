@@ -1,9 +1,9 @@
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { DefaultCardPlaceHolderImage } from "@/constants/data";
 import { Star, Users } from "lucide-react";
 import Image from "next/image";
-import { DefaultCardPlaceHolderImage } from "@/constants/data";
 
 interface SpaceCardProps {
   type: string;
@@ -28,7 +28,7 @@ export function SpaceCard({
 }: SpaceCardProps) {
   return (
     <Card className="w-full">
-      <CardContent className="p-6 space-y-6 relative">
+      <CardContent className="p-6 w-full space-y-6 relative">
         <div className="aspect-video bg-muted rounded-lg relative">
           {/* Image */}
           <Image
@@ -45,7 +45,9 @@ export function SpaceCard({
           <div className="absolute bottom-[-14px] left-4 z-10 flex items-center gap-1 p-1 bg-gray-100 rounded-[22px]">
             <Star className="w-3 h-3" />
             <span className="text-sm">{rating.toFixed(1)}</span>
-            <span className="text-xs text-gray-500">({reviewCount} Reviews)</span>
+            <span className="text-xs text-gray-500">
+              ({reviewCount} Reviews)
+            </span>
           </div>
         </div>
 

@@ -1,8 +1,13 @@
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { DefaultCardPlaceHolderImage } from "@/constants/data";
 import { Star } from "lucide-react";
 import Image from "next/image";
-import { DefaultCardPlaceHolderImage } from "@/constants/data";
 
 interface PackageCardProps {
   name: string;
@@ -11,9 +16,14 @@ interface PackageCardProps {
   reviews: number;
 }
 
-export const PackageCard = ({ name, type, price, reviews }: PackageCardProps) => {
+export const PackageCard = ({
+  name,
+  type,
+  price,
+  reviews,
+}: PackageCardProps) => {
   return (
-    <Card className="w-full md:w-[277px] h-[465px] flex-shrink-0 relative">
+    <Card className="w-full h-[465px] flex-shrink-0 relative">
       <CardHeader className="p-0">
         <div className="aspect-video bg-gray-100 h-[182px] rounded-lg relative">
           <Image

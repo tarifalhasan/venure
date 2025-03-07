@@ -1,12 +1,12 @@
-import React from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { useIsMobile } from "@/hooks/use-mobile";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { Navigation, Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 import { PackageCard } from "./PackageCard"; // Assuming PackageCard component is imported
-import { Button } from "@/components/ui/button";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 const packages = [
   { name: "Vendor 1", type: "Buffet", price: 450, reviews: 2228 },
@@ -18,18 +18,22 @@ const packages = [
 ];
 
 const Packages = () => {
-  const isMobile=useIsMobile()
+  const isMobile = useIsMobile();
   return (
-    <div id="Packages">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold">Packages: Food & Beverages</h2>
-        <Button variant="outline">SHOW ALL</Button>
+    <Card id="Packages" className="p-4">
+      <div className="flex flex-wrap items-center justify-between">
+        <h2 className="text-lg font-semibold text-skin-black tracking-[-0.36px]">
+          Packages: Food & Beverages
+        </h2>
+        <Button className="text-sm text-[#343A3F] font-bold uppercase bg-transparent border border-[#343A3F] hover:text-white h-10 rounded-[8px]">
+          show all
+        </Button>
       </div>
 
       <Swiper
         modules={[Navigation, Pagination]}
         spaceBetween={20} // Controls the space between slides
-        slidesPerView={isMobile?1:3} // Three slides per view
+        slidesPerView={isMobile ? 1 : 2} // Three slides per view
         navigation
         pagination={{ clickable: true }}
         className="py-6"
@@ -45,7 +49,7 @@ const Packages = () => {
           </SwiperSlide>
         ))}
       </Swiper>
-    </div>
+    </Card>
   );
 };
 
