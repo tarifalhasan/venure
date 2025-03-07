@@ -47,7 +47,7 @@ export function SearchResultsHeader({
         {/* Tabs */}
         <div className="w-full sm:w-auto">
           <Tabs defaultValue="listings" onValueChange={onTabChange}>
-            <TabsList className="flex  bg-gray-100 shadow-3xl px-4 rounded-full backdrop-blur-[100px] py-2 h-12 space-x-1 w-full sm:w-auto">
+            <TabsList className="flex  bg-[#F0F0F0]  shadow-none px-2 rounded-full py-2 h-12 space-x-1 w-full sm:w-auto">
               <TabsTrigger
                 value="listings"
                 className="flex-1 rounded-full data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-[0px_2px_16px 0px_rgba(0, 0, 0, 0.08] border-0 px-4 border-gray-200 sm:flex-none w-fit"

@@ -20,8 +20,10 @@ export default {
       },
     },
     extend: {
-      backgroundImage: {
+      background: {
         tab: "linear-gradient(0deg, #333 0%, #333 100%), rgba(166, 166, 166, 0.61)",
+        tab_2:
+          "linear-gradient(0deg, #333 0%, #333 100%), rgba(166, 166, 166, 0.70)",
       },
       colors: {
         primaryDark: {

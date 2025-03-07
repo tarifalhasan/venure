@@ -15,11 +15,9 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils"; // Ensure you use your utility function for classnames
-import { Bell, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { LoginRegisterDropdown } from "./navbar_dropdown/nav-login-dropdown";
-import { NavNotificationDropdown } from "./navbar_dropdown/nav-notification-dropdown";
 import { SearchForm } from "./NewSearchComponent";
 interface Props {
   navbarClasses?: string;
@@ -93,7 +91,7 @@ export function Navbar({
             </DropdownMenu>
 
             {/* Notifications */}
-            <DropdownMenu>
+            {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon">
                   <Bell className="h-5 w-5" />
@@ -102,10 +100,10 @@ export function Navbar({
               <DropdownMenuContent align="end">
                 <NavNotificationDropdown />
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> */}
 
             {/* Login/Sign Up */}
-            <DropdownMenu>
+            {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button className="bg-white text-black hover:bg-primaryDark hover:text-white">
                   LOGIN / SIGN UP
@@ -114,7 +112,7 @@ export function Navbar({
               <DropdownMenuContent align="end">
                 <LoginRegisterDropdown />
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> */}
 
             {/* Mobile Menu */}
             <Sheet>

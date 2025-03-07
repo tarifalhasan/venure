@@ -1,11 +1,10 @@
 "use client";
+import { ImageCarousel } from "@/components/ui/image-carousel";
 import { MapPin, Star, Users } from "lucide-react";
 import React from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { Navigation, Pagination } from "swiper/modules";
-import { Swiper, SwiperSlide } from "swiper/react";
 
 interface VenueCardProps {
   name: string;
@@ -17,7 +16,10 @@ interface VenueCardProps {
   price: number;
   discountPrice: number;
   discountPercent: number;
-  images: string[];
+  images: {
+    src: string;
+    alt: string;
+  }[];
 }
 
 const VenueCard: React.FC<VenueCardProps> = ({
@@ -42,22 +44,14 @@ const VenueCard: React.FC<VenueCardProps> = ({
       <div className="flex flex-col lg:flex-row w-full   border rounded-b-lg shadow-lg overflow-hidden bg-white">
         {/* Left Image Carousel */}
         <div className="w-full lg:w-2/5 relative">
-          <Swiper
-            modules={[Navigation, Pagination]}
-            navigation
-            pagination={{ clickable: true }}
-            className="h-full !pb-0"
-          >
-            {images.map((img, index) => (
-              <SwiperSlide key={index}>
-                <img
-                  src={img}
-                  alt={`Image ${index + 1}`}
-                  className="w-full h-full object-cover"
-                />
-              </SwiperSlide>
-            ))}
-          </Swiper>
+          <ImageCarousel
+            images={images}
+            autoPlay={false}
+            aspectRatio="4/3"
+            className="max-w-xl  mx-auto"
+            imageClassName="rounded-bl-sm"
+            showArrows={false}
+          />
 
           {/* Most Booking 2024 Badge */}
           <div className="absolute z-20 inline-flex items-center gap-2 top-4 left-2 bg-[#EDF5FC] text-black px-3 py-1 rounded-full text-xs shadow">
