@@ -1,0 +1,174 @@
+import { Card } from "@/components/ui/card";
+import { MapPin, X } from "lucide-react";
+
+export default function VenueListing() {
+  return (
+    <div className="space-y-6">
+      {/* Nearby Section */}
+      <Card className="bg-white rounded-lg p-4 shadow-sm">
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="text-lg text-skin-black 2xl:text-xl font-semibold mb-4">
+            Nearby:
+          </h3>
+          <button className="text-gray-900 flex items-center text-sm">
+            Maps <span className="ml-1">›</span>
+          </button>
+        </div>
+
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <div className="bg-gray-100 p-1 rounded">
+              <MapPin className="h-4 w-4" />
+            </div>
+            <span className="text-sm">BTS Station: Ekkamai (100m)</span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <div className="bg-gray-100 p-1 rounded">
+              <MapPin className="h-4 w-4" />
+            </div>
+            <span className="text-sm">MRT Station: Asok (800m)</span>
+          </div>
+        </div>
+      </Card>
+
+      {/* Size and Area Section */}
+      <Card className="bg-white rounded-lg p-4 shadow-sm">
+        <h3 className="text-lg text-skin-black 2xl:text-xl font-semibold mb-4 mb-3">
+          Size and Area
+        </h3>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-3">
+            <div className="flex items-center gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width={30}
+                height={27}
+                viewBox="0 0 30 27"
+                fill="none"
+              >
+                <rect
+                  x="4.5"
+                  y="9.5"
+                  width={17}
+                  height={17}
+                  rx="4.5"
+                  stroke="black"
+                />
+                <path
+                  d="M26.8232 25.1768C26.9209 25.2744 27.0791 25.2744 27.1768 25.1768L28.7678 23.5858C28.8654 23.4882 28.8654 23.3299 28.7678 23.2322C28.6701 23.1346 28.5118 23.1346 28.4142 23.2322L27 24.6464L25.5858 23.2322C25.4882 23.1346 25.3299 23.1346 25.2322 23.2322C25.1346 23.3299 25.1346 23.4882 25.2322 23.5858L26.8232 25.1768ZM27.1768 7.82322C27.0791 7.72559 26.9209 7.72559 26.8232 7.82322L25.2322 9.41421C25.1346 9.51184 25.1346 9.67014 25.2322 9.76777C25.3299 9.8654 25.4882 9.8654 25.5858 9.76777L27 8.35355L28.4142 9.76777C28.5118 9.8654 28.6701 9.8654 28.7678 9.76777C28.8654 9.67014 28.8654 9.51184 28.7678 9.41421L27.1768 7.82322ZM27.25 25L27.25 8L26.75 8L26.75 25L27.25 25Z"
+                  fill="black"
+                />
+                <path
+                  d="M5.82322 4.82322C5.72559 4.92085 5.72559 5.07915 5.82322 5.17678L7.41421 6.76777C7.51184 6.8654 7.67014 6.8654 7.76777 6.76777C7.8654 6.67014 7.8654 6.51184 7.76777 6.41421L6.35355 5L7.76777 3.58579C7.8654 3.48816 7.8654 3.32986 7.76777 3.23223C7.67014 3.1346 7.51184 3.1346 7.41421 3.23223L5.82322 4.82322ZM23.1768 5.17678C23.2744 5.07915 23.2744 4.92085 23.1768 4.82322L21.5858 3.23223C21.4882 3.1346 21.3299 3.1346 21.2322 3.23223C21.1346 3.32986 21.1346 3.48816 21.2322 3.58579L22.6464 5L21.2322 6.41421C21.1346 6.51184 21.1346 6.67014 21.2322 6.76777C21.3299 6.8654 21.4882 6.8654 21.5858 6.76777L23.1768 5.17678ZM6 5.25L23 5.25V4.75L6 4.75V5.25Z"
+                  fill="black"
+                />
+              </svg>
+              <label className="text-sm text-[#9A9FA3]">Total Area:</label>
+            </div>
+            <div className="flex items-center gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width={20}
+                height={26}
+                viewBox="0 0 20 26"
+                fill="none"
+              >
+                <path
+                  d="M17.8232 18.1768C17.9209 18.2744 18.0791 18.2744 18.1768 18.1768L19.7678 16.5858C19.8654 16.4882 19.8654 16.3299 19.7678 16.2322C19.6701 16.1346 19.5118 16.1346 19.4142 16.2322L18 17.6464L16.5858 16.2322C16.4882 16.1346 16.3299 16.1346 16.2322 16.2322C16.1346 16.3299 16.1346 16.4882 16.2322 16.5858L17.8232 18.1768ZM18.1768 0.823223C18.0791 0.725592 17.9209 0.725592 17.8232 0.823223L16.2322 2.41421C16.1346 2.51184 16.1346 2.67014 16.2322 2.76777C16.3299 2.8654 16.4882 2.8654 16.5858 2.76777L18 1.35355L19.4142 2.76777C19.5118 2.8654 19.6701 2.8654 19.7678 2.76777C19.8654 2.67014 19.8654 2.51184 19.7678 2.41421L18.1768 0.823223ZM18.25 18L18.25 1L17.75 1L17.75 18L18.25 18Z"
+                  fill="black"
+                />
+                <path
+                  d="M3.44071 13.7429C3.32401 13.4926 3.43229 13.1951 3.68256 13.0784L10.5765 9.8637C11.3273 9.51359 12.2198 9.83842 12.5699 10.5892L14.9393 15.6705C15.5228 16.9219 14.9814 18.4093 13.7301 18.9929L8.64879 21.3623C7.89798 21.7124 7.00551 21.3876 6.6554 20.6368L3.44071 13.7429Z"
+                  stroke="black"
+                />
+                <line x1="3.5" y1={14} x2="3.5" y2={1} stroke="black" />
+              </svg>
+
+              <label className="text-sm text-[#9A9FA3]">Ceiling Height:</label>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="inline-flex items-center gap-2">
+                <img src="/people.svg" className="w-6" alt="people.svg" />
+                <img src="/people.svg" className="w-6" alt="people.svg" />
+                <img src="/people.svg" className="w-6" alt="people.svg" />
+              </div>
+              <label className="text-sm text-[#9A9FA3]">500</label>
+            </div>
+          </div>
+          <div className="flex items-center gap-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width={30}
+              height={27}
+              viewBox="0 0 30 27"
+              fill="none"
+            >
+              <rect
+                x="4.5"
+                y="9.5"
+                width={17}
+                height={17}
+                rx="4.5"
+                stroke="black"
+              />
+              <path
+                d="M26.8232 25.1768C26.9209 25.2744 27.0791 25.2744 27.1768 25.1768L28.7678 23.5858C28.8654 23.4882 28.8654 23.3299 28.7678 23.2322C28.6701 23.1346 28.5118 23.1346 28.4142 23.2322L27 24.6464L25.5858 23.2322C25.4882 23.1346 25.3299 23.1346 25.2322 23.2322C25.1346 23.3299 25.1346 23.4882 25.2322 23.5858L26.8232 25.1768ZM27.1768 7.82322C27.0791 7.72559 26.9209 7.72559 26.8232 7.82322L25.2322 9.41421C25.1346 9.51184 25.1346 9.67014 25.2322 9.76777C25.3299 9.8654 25.4882 9.8654 25.5858 9.76777L27 8.35355L28.4142 9.76777C28.5118 9.8654 28.6701 9.8654 28.7678 9.76777C28.8654 9.67014 28.8654 9.51184 28.7678 9.41421L27.1768 7.82322ZM27.25 25L27.25 8L26.75 8L26.75 25L27.25 25Z"
+                fill="black"
+              />
+              <path
+                d="M5.82322 4.82322C5.72559 4.92085 5.72559 5.07915 5.82322 5.17678L7.41421 6.76777C7.51184 6.8654 7.67014 6.8654 7.76777 6.76777C7.8654 6.67014 7.8654 6.51184 7.76777 6.41421L6.35355 5L7.76777 3.58579C7.8654 3.48816 7.8654 3.32986 7.76777 3.23223C7.67014 3.1346 7.51184 3.1346 7.41421 3.23223L5.82322 4.82322ZM23.1768 5.17678C23.2744 5.07915 23.2744 4.92085 23.1768 4.82322L21.5858 3.23223C21.4882 3.1346 21.3299 3.1346 21.2322 3.23223C21.1346 3.32986 21.1346 3.48816 21.2322 3.58579L22.6464 5L21.2322 6.41421C21.1346 6.51184 21.1346 6.67014 21.2322 6.76777C21.3299 6.8654 21.4882 6.8654 21.5858 6.76777L23.1768 5.17678ZM6 5.25L23 5.25V4.75L6 4.75V5.25Z"
+                fill="black"
+              />
+            </svg>
+            <label className="text-sm text-[#9A9FA3]">Total Rooms:</label>
+          </div>
+        </div>
+      </Card>
+
+      {/* CTA Section */}
+      <Card className="bg-white rounded-lg p-4 shadow-sm">
+        <button className="w-full bg-gray-800 text-white py-3 rounded-md mb-4">
+          Plan a Free Site Visit
+        </button>
+
+        <div className="mb-4">
+          <div className="text-xs text-gray-500">Starting at</div>
+          <div className="text-green-500 text-2xl font-semibold">120,000</div>
+        </div>
+
+        <div className="space-y-3">
+          <div className="text-gray-800 font-medium">Additional Add ons:</div>
+
+          <div className="flex flex-wrap gap-2">
+            <div className="flex items-center bg-transparent border border-[#959595] rounded-full px-3 py-1 text-sm">
+              Planner: Divine Events
+              <button className="ml-1">
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="flex items-center bg-transparent border border-[#959595] rounded-full px-3 py-1 text-sm">
+              Tito Catering
+              <button className="ml-1">
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="flex items-center bg-transparent border border-[#959595] rounded-full px-3 py-1 text-sm">
+              DJ Sajan
+              <button className="ml-1">
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="text-center text-sm mt-4">
+          Visit us, its free of cost!
+        </div>
+      </Card>
+    </div>
+  );
+}

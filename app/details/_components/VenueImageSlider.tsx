@@ -59,7 +59,7 @@ export const VenueImageSlider = () => {
 
       {/* Main Image Swiper */}
       <Swiper
-        modules={[Navigation, Pagination, Thumbs]}
+        modules={[Navigation, Thumbs]}
         navigation
         pagination={{ clickable: true }}
         thumbs={{
@@ -70,7 +70,7 @@ export const VenueImageSlider = () => {
         }}
         spaceBetween={20}
         slidesPerView={1}
-        className="h-full w-full aspect-[16/12] lg:aspect-[16/8] rounded-none"
+        className="h-full w-full !pb-5 aspect-[16/12] lg:aspect-[16/8] rounded-none"
       >
         {images.map((image, index) => (
           <SwiperSlide key={index}>
@@ -105,7 +105,7 @@ export const VenueImageSlider = () => {
             clickable: true,
             el: ".swiper-pagination",
           }}
-          className=" rounded-none !pb-0 pt-6"
+          className=" rounded-none !pb-0 pt-1"
         >
           {images.map((image, index) => (
             <SwiperSlide key={index}>

@@ -7,9 +7,9 @@ import { NavigationTabs } from "./_components/NavigationTabs";
 import Packages from "./_components/Packages";
 import Partners from "./_components/Partners";
 import Reviews from "./_components/Reviews";
-import { Sidebar } from "./_components/Sidebar";
 import SpaceSelector from "./_components/SpaceSelector";
 import { VenueImageSlider } from "./_components/VenueImageSlider";
+import VenueListing from "./_components/VenueListing";
 
 function App() {
   return (
@@ -26,7 +26,7 @@ function App() {
         <Partners />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 flex flex-col gap-y-10">
+          <div className="lg:col-span-2 flex flex-col gap-y-6">
             <NavigationTabs activeTab="Overview" onTabChange={() => {}} />
 
             <Card id="Overview">
@@ -76,7 +76,8 @@ function App() {
 
           {/* Sidebar */}
           <div className="lg:col-span-1">
-            <Sidebar />
+            {/* <Sidebar /> */}
+            <VenueListing />
           </div>
         </div>
       </div>
