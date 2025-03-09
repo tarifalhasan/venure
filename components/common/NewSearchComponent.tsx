@@ -14,7 +14,12 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 import { Input } from "../ui/input";
-export function SearchForm() {
+
+interface SearchFormProps {
+  showSearchType?: boolean; // Default hidden
+}
+
+export function SearchForm({ showSearchType = false }: SearchFormProps) {
   const [searchType, setSearchType] = useState("venues");
   const [location, setLocation] = useState("");
   const [date, setDate] = useState<DateRange | undefined>({
@@ -76,36 +81,37 @@ export function SearchForm() {
   };
 
   return (
-    <div className="relative mx-auto max-w-6xl">
-      {/* Search type buttons */}
-      <div className="flex items-center gap-4 mb-4 flex-wrap">
-        {SEARCH_TYPE.map((item) => (
-          <button
-            key={item.id}
-            className={cn(
-              "px-4 py-2 inline-flex rounded-full border border-skin-black text-skin-black text-sm font-normal items-center justify-center",
-              item.id === searchType
-                ? "bg-white border-transparent"
-                : "bg-transparent"
-            )}
-            onClick={() => setSearchType(item.id)}
-          >
-            {item.label}
-          </button>
-        ))}
-      </div>
+    <div className="relative mx-auto max-w-[850px]">
+      {showSearchType && (
+        <div className="flex items-center gap-4 mb-4 flex-wrap">
+          {SEARCH_TYPE.map((item) => (
+            <button
+              key={item.id}
+              className={cn(
+                "px-4 py-2 h-8 inline-flex rounded-full border border-skin-black text-skin-black text-sm font-normal items-center justify-center",
+                item.id === searchType
+                  ? "bg-white border-transparent"
+                  : "bg-transparent"
+              )}
+              onClick={() => setSearchType(item.id)}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Main Search Box */}
       <div
-        className="flex flex-col xl:px-8 bg-white rounded-md md:rounded-full lg:flex-row gap-4 w-full py-4 mx-auto px-5"
+        className="flex flex-col border border-[#ddd] bg-white rounded-md md:rounded-full lg:items-center h-[66px] lg:flex-row gap-4 w-full py-4 mx-auto px-2"
         style={{
           boxShadow:
             "0px 3px 12px 0px rgba(0, 0, 0, 0.10), 0px 1px 2px 0px rgba(0, 0, 0, 0.08)",
         }}
       >
         {/* Location Input with Autocomplete */}
-        <div className="flex-1 relative">
-          <h3 className="text-xs xl:text-sm text-foreground font-medium mb-1">
+        <div className="flex-1 pl-2 relative">
+          <h3 className="text-xs  text-foreground font-medium mb-0.5">
             Location
           </h3>
           <div className="relative">
@@ -113,7 +119,7 @@ export function SearchForm() {
               value={location}
               onChange={(e) => handleSearchChange(e.target.value)}
               placeholder="Search destinations..."
-              className="bg-transparent h-auto py-0 px-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none border-none outline-none focus:outline-none ring-0 focus:ring-0"
+              className="bg-transparent text-xs font-normal text-[#6A6A6A] h-auto py-0 px-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none border-none outline-none focus:outline-none ring-0 focus:ring-0"
               onFocus={() => setShowSuggestions(true)}
               onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
             />
@@ -140,16 +146,14 @@ export function SearchForm() {
 
         {/* Date Picker */}
         <div className="border-l pl-4 border-[#DDD]">
-          <h3 className="text-xs xl:text-sm text-foreground font-medium mb-1">
-            Date
-          </h3>
+          <h3 className="text-xs text-foreground font-medium mb-0.5">Date</h3>
           <Popover>
             <PopoverTrigger asChild>
               <Button
                 id="date"
                 variant={"outline"}
                 className={cn(
-                  "w-[300px] h-auto rounded-none border-none py-0 px-0 hover:bg-transparent justify-start text-left font-normal",
+                  "w-[300px] h-auto rounded-none border-none py-0 px-0 hover:bg-transparent justify-start text-left font-normal text-sm text-[#6A6A6A]",
                   !date && "text-muted-foreground"
                 )}
               >

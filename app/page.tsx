@@ -1,5 +1,4 @@
 "use client";
-import { Categories } from "@/components/common/categories";
 import { Footer } from "@/components/common/footer";
 import { Newsletter } from "@/components/common/news-letter";
 
@@ -55,8 +54,8 @@ const venues = [
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
-      <Navbar>
+    <main className="min-h-screen flex w-full flex-col gap-[60px]">
+      <Navbar showSearchType={true}>
         <div className=" mx-auto pt-10 pb-7 space-y-8">
           <div className="space-y-4">
             <h2 className="text-3xl md:text-4xl  xl:text-5xl font-bold text-primaryBlue-foreground">
@@ -69,19 +68,20 @@ export default function Home() {
         </div>
       </Navbar>
 
-      <Categories />
+      {/* <Categories /> */}
 
       {/* Recommended Venues */}
+
       <SliderSection
         title="Recommended Venues"
-        subtitle="Find the best venues for your events"
+        className="pt-10"
         items={venues}
         renderItem={(venue) => <CommonCard {...venue} />}
       />
+
       {/* Top Rated */}
       <SliderSection
         title="Top Rated Venue"
-        subtitle="Find the best venues for your events"
         items={venues}
         renderItem={(venue) => <CommonCard {...venue} />}
       />
@@ -89,7 +89,6 @@ export default function Home() {
       {/* Near You Venues */}
       <SliderSection
         title="Near You Venue"
-        subtitle="Find the best venues for your events"
         items={venues}
         renderItem={(venue) => <CommonCard {...venue} />}
       />
@@ -97,7 +96,6 @@ export default function Home() {
       {/* Deals */}
       <SliderSection
         title="Deals Venue"
-        subtitle="Find the best venues for your events"
         items={venues}
         renderItem={(venue) => <CommonCard {...venue} />}
       />

@@ -24,12 +24,14 @@ interface Props {
   searchComponentWrapperClasses?: string;
   children?: React.ReactNode;
   showSearchBar?: boolean;
+  showSearchType?: boolean;
 }
 export function Navbar({
   children,
   navbarClasses,
   searchComponentWrapperClasses,
   showSearchBar = true,
+  showSearchType = false,
 }: Props) {
   return (
     <nav
@@ -154,7 +156,7 @@ export function Navbar({
               searchComponentWrapperClasses
             )}
           >
-            <SearchForm />
+            <SearchForm showSearchType={showSearchType} />
           </div>
         )}
       </div>

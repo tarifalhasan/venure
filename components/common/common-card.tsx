@@ -1,4 +1,4 @@
-import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 
 interface CommonCardProps {
@@ -9,7 +9,7 @@ interface CommonCardProps {
 
 export function CommonCard({ title, subtitle, imageUrl }: CommonCardProps) {
   return (
-    <Card className="overflow-hidden w-full">
+    <Card className="overflow-hidden shadow-elevation rounded-[8px] w-full">
       <div className="aspect-video relative">
         <Image
           src={imageUrl || "/placeholder.svg"}
@@ -19,11 +19,11 @@ export function CommonCard({ title, subtitle, imageUrl }: CommonCardProps) {
         />
       </div>
       <CardHeader>
-        <CardTitle className="text-lg font-semibold">{title}</CardTitle>
+        <CardTitle className="text-lg xl:text-xl text-black font-semibold">
+          {title}
+        </CardTitle>
+        <p className="text-sm text-[#878D96] leading-[140%]">{subtitle}</p>
       </CardHeader>
-      <CardFooter>
-        <p className="text-sm text-muted-foreground">{subtitle}</p>
-      </CardFooter>
     </Card>
   );
 }

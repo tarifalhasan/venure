@@ -36,19 +36,19 @@ const VenueCard: React.FC<VenueCardProps> = ({
 }) => {
   return (
     <div className="flex flex-col  w-full    rounded-lg shadow-lg overflow-hidden bg-white">
-      <div className="bg-primaryBlue py-5 px-4">
+      <div className="bg-[#234C86] inline-flex items-center h-10 py-5 px-4">
         <p className="text-sm font-normal text-white">
           Evenure Preferred Property
         </p>
       </div>
       <div className="flex flex-col lg:flex-row w-full   border rounded-b-lg shadow-lg overflow-hidden bg-white">
         {/* Left Image Carousel */}
-        <div className="w-full lg:w-2/5 relative">
+        <div className="w-full lg:w-[254px] relative">
           <ImageCarousel
             images={images}
             autoPlay={false}
-            aspectRatio="4/3"
-            className="max-w-xl  mx-auto"
+            aspectRatio="4/4 "
+            className="max-w-xl max-h-[254px] mx-auto"
             imageClassName="rounded-bl-sm"
             showArrows={false}
           />
@@ -74,7 +74,7 @@ const VenueCard: React.FC<VenueCardProps> = ({
         </div>
 
         {/* Right Details Section */}
-        <div className="lg:w-3/5 p-4 flex flex-col justify-between">
+        <div className="flex-1 p-4 flex flex-col justify-between">
           {/* Venue Info */}
           <div className="space-y-1">
             <h3 className="text-lg xl:text-xl text-foreground font-semibold">
