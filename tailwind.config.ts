@@ -104,6 +104,7 @@ export default {
           "0px 2px 4px 0px rgba(58, 92, 144, 0.14), 0px 3px 4px 0px rgba(58, 92, 144, 0.12), 0px 1px 5px 0px rgba(58, 92, 144, 0.20)",
         elevation:
           "0px 2px 4px 0px rgba(58, 92, 144, 0.14), 0px 3px 4px 0px rgba(58, 92, 144, 0.12), 0px 1px 5px 0px rgba(58, 92, 144, 0.20)",
+        pill: "0px 2px 16px 0px var(--Miscellaneous-Floating-Tab---Pill-Shadow, rgba(0, 0, 0, 0.08))",
       },
       borderRadius: {
         lg: "var(--radius)",

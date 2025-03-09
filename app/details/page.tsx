@@ -2,6 +2,7 @@
 import { Footer } from "@/components/common/footer";
 import { Navbar } from "@/components/common/navbar";
 import { Card, CardContent } from "@/components/ui/card";
+import { BookingModalPopup } from "./_components/BookingPopup/BookingModal";
 import HotelFeatures from "./_components/Features";
 import { NavigationTabs } from "./_components/NavigationTabs";
 import Packages from "./_components/Packages";
@@ -78,6 +79,8 @@ function App() {
           <div className="lg:col-span-1">
             {/* <Sidebar /> */}
             <VenueListing />
+            <div className="pb-4" />
+            <BookingModalPopup />
           </div>
         </div>
       </div>

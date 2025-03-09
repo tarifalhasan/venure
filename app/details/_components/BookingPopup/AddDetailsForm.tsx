@@ -86,14 +86,19 @@ const AddDetailsForm = () => {
                 <FormItem>
                   <FormLabel>Phone Number</FormLabel>
                   <FormControl>
-                    <PhoneInput
-                      containerClass="!z-40 w-full"
-                      buttonClass="!bg-[#ffff] !border-none focus:!outline-none hover:!bg-[#ffff]"
-                      inputClass="!w-full !bg-[#ffff] !border-none !text-black !text-base placeholder:!text-black"
-                      country={"us"}
-                      value={field.value}
-                      onChange={(value) => field.onChange(value)}
-                    />
+                    <div className="flex items-center h-10 w-full rounded-[8px] border border-input bg-background px-3 py-2 text-base ring-offset-background">
+                      <PhoneInput
+                        containerClass="!z-40 w-full"
+                        buttonClass="!bg-transparent !border-none focus:!outline-none hover:!bg-[#ffff]"
+                        inputClass="!w-full !bg-[#ffff] !border-none !text-black !text-base placeholder:!text-black"
+                        country={"us"}
+                        value={field.value}
+                        onChange={(value) => field.onChange(value)}
+                        searchPlaceholder="search"
+                        autocompleteSearch
+                        enableSearch
+                      />
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -24,8 +24,8 @@ export const PartnerCard = ({ name, type }: PartnerCardProps) => {
 
   return (
     <Card className="w-full bg-white">
-      <CardContent className="flex items-center justify-between py-6 px-4">
-        <div className="space-y-4">
+      <CardContent className="flex items-center justify-between py-4 px-4">
+        <div className="space-y-2">
           <div className="flex items-center gap-2">
             <Avatar className="w-9 h-9 bg-gray-100">
               <AvatarFallback className="bg-gray-100">
