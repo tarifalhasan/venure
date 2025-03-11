@@ -13,7 +13,7 @@ export function CommonCard({ title, subtitle, imageUrl }: CommonCardProps) {
       <div className="aspect-video relative">
         <Image
           src={imageUrl || "/placeholder.svg"}
-          alt={title}
+          alt={title||"Eventure"}
           fill
           className="object-cover"
         />

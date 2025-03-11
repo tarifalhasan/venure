@@ -36,7 +36,16 @@ builder.Services.AddDbContext<EvenureDbContext>(options =>
 
 // Add Controllers
 builder.Services.AddControllers();
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        policy =>
+        {
+            policy.AllowAnyOrigin() 
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        });
+});
 // Add Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -45,7 +54,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
-
+app.UseCors("AllowAll");
 // Enable Swagger for Development
 if (app.Environment.IsDevelopment())
 {

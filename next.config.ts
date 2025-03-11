@@ -30,7 +30,15 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "s3.amazonaws.com", //s3.amazonaws.com
       },
-    ]
+      {
+        protocol: "https",
+        hostname: "venue-media-bucket.s3.amazonaws.com",
+      },
+      {
+        protocol: "https",
+        hostname: "venue-media-bucket.s3.ap-southeast-1.amazonaws.com",
+      }
+    ],
   },
 };
 

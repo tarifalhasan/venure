@@ -48,6 +48,14 @@ export default function HomePage() {
   } = useDealsVenuesQuery();
 
   // 📌 Function to render sections while keeping the design intact
+
+  {
+    /* "venuename": "Grand Ballroom",
+      "siteName": "Grand Plaza",
+      "siteCity": "New York",
+      "siteCountry": "USA",
+      "venueCoverImage": "https://venue-media-bucket.s3.amazonaws.com/venue-images/cover-images/1/"</> */
+  }
   const renderSection = (
     title: string,
     venues: Venue[] | undefined,
@@ -73,7 +81,13 @@ export default function HomePage() {
         <SliderSection
           title={title}
           items={venues}
-          renderItem={(venue) => <CommonCard {...venue} />}
+          renderItem={(venue: Venue) => (
+            <CommonCard
+              title={venue.venuename}
+              imageUrl={venue.venueCoverImage}
+              subtitle={`${venue.siteName}, ${venue.siteCity}, ${venue.siteCountry}`}
+            />
+          )}
         />
       )}
     </div>
