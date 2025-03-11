@@ -1,0 +1,14 @@
+import axios from "axios";
+
+const BASE_API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5232/api/venue";
+
+const api = axios.create({
+  baseURL: BASE_API_URL,
+  timeout: 10000,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+// Rest of the configuration remains the same...
+export default api;
