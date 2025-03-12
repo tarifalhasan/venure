@@ -1,11 +1,13 @@
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
-import VenueDetailsComponent from "../Index";
+import VenueDetailsComponent from "./Index";
 import { VenueService } from "@/services/venueService";
 import { ErrorSection } from "@/components/common/Error_NoVenues_Sections";
 import type { Metadata } from "next";
+import { ReviewService } from "@/services/reviewService";
 
 interface PageProps {
   params: Promise<{ venueId: string }>;
+  searchParams: Promise<{ currentPage?: string; itemsPerPage?: string }>;
 }
 
 // 🔹 Dynamic SEO Generation
@@ -49,23 +51,44 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
-export default async function Page({ params }: PageProps) {
+export default async function Page({ params, searchParams }: PageProps) {
   const queryClient = new QueryClient();
   const venueId = (await params).venueId;
+
+  // Parse search params with defaults
+  const searchParamsData = await searchParams;
+  const currentPage = parseInt(searchParamsData.currentPage || "1", 10) || 1;
+  const itemsPerPage = parseInt(searchParamsData.itemsPerPage || "10", 10) || 10;
 
   if (!venueId) {
     return <ErrorSection title="Venue not found" />;
   }
 
-  // Prefetch data on the server
-  await queryClient.prefetchQuery({
-    queryKey: ["venueDetails", venueId],
-    queryFn: async () => await VenueService.getVenueDetails(venueId),
-  });
+  try {
+    // Prefetch venue details data on the server
+    await queryClient.prefetchQuery({
+      queryKey: ["venueDetails", venueId],
+      queryFn: () => VenueService.getVenueDetails(venueId),
+    });
 
-  return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <VenueDetailsComponent venueId={venueId} />
-    </HydrationBoundary>
-  );
+    // Prefetch reviews data on the server with pagination
+    await queryClient.prefetchQuery({
+      queryKey: ["reviews", venueId, currentPage, itemsPerPage],
+      queryFn: () =>
+        ReviewService.getReviewsByVenueId(venueId, currentPage, itemsPerPage),
+    });
+
+    return (
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <VenueDetailsComponent
+          venueId={venueId}
+          currentPage={currentPage}
+          itemsPerPage={itemsPerPage}
+        />
+      </HydrationBoundary>
+    );
+  } catch (error) {
+    console.error("Error prefetching data:", error);
+    return <ErrorSection title="Error loading venue details" />;
+  }
 }

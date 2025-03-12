@@ -66,3 +66,23 @@ export interface VenueDetails {
   venueAmenities: string[];
   siteVendors: SiteVendor[];
 }
+
+
+
+//Reviews
+
+export interface Review {
+  reviewid: number;
+  venueid: number;
+  reviewcontent: string;
+  reviewername: string;
+  createddate: string; // Using string since it's an ISO date string
+  updateddate: string; // Using string since it's an ISO date string
+}
+
+export interface ReviewResponse {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  reviews: Review[];
+}

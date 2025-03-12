@@ -15,14 +15,29 @@ import type { VenueDetails } from "@/types/venue";
 import { useVenueDetailsQuery } from "@/queries/venuesQueries";
 import { VenueDetailsSkeleton } from "@/components/skeletons/venue-details-skeleton";
 import { ErrorSection } from "@/components/common/Error_NoVenues_Sections";
+import { useReviewsQuery } from "@/queries/reviewQueries";
 
-function VenueDetails({ venueId }: { venueId: string }) {
+function VenueDetails({
+  venueId,
+  ...params
+}: {
+  venueId: string;
+  currentPage: number;
+  itemsPerPage: number;
+}) {
   const {
     data: details,
     isLoading: isLoadingDetails,
     error: detailsError,
     refetch: refetchDetails,
   } = useVenueDetailsQuery(venueId);
+
+  const {
+    data: reviews,
+    isLoading: isLoadingReviews,
+    error: reviewError,
+    refetch: refetchReviews,
+  } = useReviewsQuery(venueId, params.currentPage, params.itemsPerPage);
 
   if (isLoadingDetails) {
     return <VenueDetailsSkeleton />;
