@@ -29,7 +29,7 @@ const SliderSection: React.FC<SliderSectionProps> = ({
   const isMobile = useIsMobile();
 
   return (
-    <section className={cn("container", className)}>
+    <section className={cn("", className)}>
       <div className="mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-2">

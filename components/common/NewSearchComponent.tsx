@@ -103,7 +103,7 @@ export function SearchForm({ showSearchType = false }: SearchFormProps) {
 
       {/* Main Search Box */}
       <div
-        className="flex flex-col border border-[#ddd] bg-white rounded-md md:rounded-full lg:items-center h-[66px] lg:flex-row gap-4 w-full py-4 mx-auto px-2"
+        className="flex flex-col border border-[#ddd] bg-white rounded-md md:rounded-full lg:items-center md:h-[66px] lg:flex-row gap-4 w-full py-4 mx-auto px-2"
         style={{
           boxShadow:
             "0px 3px 12px 0px rgba(0, 0, 0, 0.10), 0px 1px 2px 0px rgba(0, 0, 0, 0.08)",

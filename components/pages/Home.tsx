@@ -1,21 +1,21 @@
 "use client";
 
-import { Footer } from "@/components/common/footer";
-import { Newsletter } from "@/components/common/news-letter";
-import SliderSection from "@/components/common/SliderSection";
 import { AdvertisementBanner } from "@/components/common/advertisement-banner";
 import { CommonCard } from "@/components/common/common-card";
+import { Footer } from "@/components/common/footer";
 import { Navbar } from "@/components/common/navbar";
+import { Newsletter } from "@/components/common/news-letter";
+import SliderSection from "@/components/common/SliderSection";
 import { VenueConsultation } from "@/components/common/venue-consultsition";
 import {
-  useRecommendedVenuesQuery,
-  useTopRatedVenuesQuery,
-  useSomeVenuesQuery,
   useDealsVenuesQuery,
+  useRecommendedVenuesQuery,
+  useSomeVenuesQuery,
+  useTopRatedVenuesQuery,
 } from "@/queries/venuesQueries";
-import { CommonCardSkeleton } from "../skeletons/common-card-skeleton";
-import { ErrorSection, NoVenuesFound } from "../common/Error_NoVenues_Sections";
 import type { Venue } from "@/types/venue";
+import { ErrorSection, NoVenuesFound } from "../common/Error_NoVenues_Sections";
+import { CommonCardSkeleton } from "../skeletons/common-card-skeleton";
 
 export default function HomePage() {
   // Fetch data using React Query hooks
@@ -63,9 +63,9 @@ export default function HomePage() {
     error: Error | null,
     refetch: () => void
   ) => (
-    <div className="container mx-auto pt-10 space-y-6">
+    <div className="mx-auto container pt-10 space-y-6">
       {!venues?.length && error && (
-        <h2 className="text-2xl font-bold mb-2 md:ml-6">{title}</h2>
+        <h2 className="text-2xl font-bold mb-2 ">{title}</h2>
       )}
       {isLoading ? (
         <SliderSection
