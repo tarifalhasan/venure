@@ -1,7 +1,12 @@
 "use client";
+import { ErrorSection } from "@/components/common/Error_NoVenues_Sections";
 import { Footer } from "@/components/common/footer";
 import { Navbar } from "@/components/common/navbar";
+import { VenueDetailsSkeleton } from "@/components/skeletons/venue-details-skeleton";
 import { Card, CardContent } from "@/components/ui/card";
+import { useReviewsQuery } from "@/queries/reviewQueries";
+import { useVenueDetailsQuery } from "@/queries/venuesQueries";
+import type { VenueDetails } from "@/types/venue";
 import { BookingModalPopup } from "./_components/BookingPopup/BookingModal";
 import HotelFeatures from "./_components/Features";
 import { NavigationTabs } from "./_components/NavigationTabs";
@@ -11,11 +16,6 @@ import Reviews from "./_components/Reviews";
 import SpaceSelector from "./_components/SpaceSelector";
 import { VenueImageSlider } from "./_components/VenueImageSlider";
 import VenueListing from "./_components/VenueListing";
-import type { VenueDetails } from "@/types/venue";
-import { useVenueDetailsQuery } from "@/queries/venuesQueries";
-import { VenueDetailsSkeleton } from "@/components/skeletons/venue-details-skeleton";
-import { ErrorSection } from "@/components/common/Error_NoVenues_Sections";
-import { useReviewsQuery } from "@/queries/reviewQueries";
 
 function VenueDetails({
   venueId,
@@ -43,6 +43,8 @@ function VenueDetails({
     return <VenueDetailsSkeleton />;
   }
 
+  console.log(details);
+
   if (detailsError) {
     return <ErrorSection title="Venue Details" refetch={refetchDetails} />;
   }
@@ -56,7 +58,14 @@ function VenueDetails({
 
       <div className="container max-w-7xl flex flex-col gap-6 py-8">
         <div className="mt-10">
-          <VenueImageSlider />
+          <VenueImageSlider
+            data={{
+              images: details?.venueImages || [],
+              venuename: details?.venuename,
+              venueaddress: details?.venueaddress,
+              venuerating: details?.venuerating,
+            }}
+          />
         </div>
         <Partners />
 
@@ -70,11 +79,7 @@ function VenueDetails({
                   About the Venue
                 </h2>
                 <p className="text-[#9A9FA3] text-sm xl:text-base leading-relaxed mb-6">
-                  A unique 5-star resort and villa offering various function halls by the
-                  beach. Near Tao Valley and Sai Noi beach. Private and secluded villa
-                  with captivating beachfront and outdoor waterside living deck. Unique
-                  design cafe and restaurant where you can order breakfast, lunch, and
-                  dinner.
+                  {details?.venuedescription}
                 </p>
 
                 <div className="flex items-center gap-4 mb-4">
@@ -83,7 +88,7 @@ function VenueDetails({
                     <span className="text-gray-500 text-sm">Capacity</span>
                   </div> */}
                   <div className="flex flex-wrap gap-2">
-                    {["Indoor", "Tables", "Chairs", "Pool", "Wifi"].map((tag) => (
+                    {details?.venueAmenities.map((tag) => (
                       <span
                         key={tag}
                         className="px-3 py-1 bg-[#C1C7CD] rounded-full text-sm inline-flex items-center justify-center h-8"

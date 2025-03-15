@@ -12,28 +12,28 @@ import "swiper/css/thumbs";
 import { Navigation, Pagination, Thumbs } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-const images = [
-  "https://images.unsplash.com/photo-1566073771259-6a8506099945",
-  "https://images.unsplash.com/photo-1582719508461-905c673771fd",
-  "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
-  "https://images.unsplash.com/photo-1566073771259-6a8506099945",
-  "https://images.unsplash.com/photo-1582719508461-905c673771fd",
-  "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
-];
+interface DetailsProps {
+  images: string[];
+  venuename?: string;
+  venueaddress?: string;
+  venuerating?: number;
+}
 
-export const VenueImageSlider = () => {
+export const VenueImageSlider = ({ data }: { data: DetailsProps }) => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
-  const totalImages = images.length;
+
+  const images = data.images;
+  const totalImages = data.images.length;
   const [currentThumbIndex, setCurrentThumbIndex] = useState(0); // Track current thumb index
 
   return (
     <Card className="relative p-4">
       <div className="flex justify-between gap-10 flex-wrap lg:flex-nowrap items-start mb-6">
         <div id="Details">
-          <h1 className="text-2xl font-bold mb-1.5">Turtle Eco Luxe Villa</h1>
+          <h1 className="text-2xl font-bold mb-1.5">{data?.venuename}</h1>
           <div className="flex items-center text-gray-600 text-sm">
             <MapPin className="w-4 h-4 mr-1" />
-            <span>2/4 Moo 14 Bangna Trad Road, KM 6.5, Bangkaew, Bangplee</span>
+            <span>{data?.venueaddress}</span>
             <Button
               variant="link"
               className="text-blue-600 px-0 ml-2 flex items-center"
@@ -52,7 +52,7 @@ export const VenueImageSlider = () => {
             <span className="text-sm">Account Name</span>
             <span className="px-2 py-1 rounded text-xs flex items-center">
               <Star className="w-3 h-3 mr-[2px] mb-[2px]" />
-              4.3
+              {data?.venuerating}
             </span>
           </div>
         </div>
@@ -73,7 +73,7 @@ export const VenueImageSlider = () => {
         slidesPerView={1}
         className="h-full w-full !pb-5 aspect-[16/12] lg:aspect-[16/8] rounded-none"
       >
-        {images.map((image, index) => (
+        {images?.map((image, index) => (
           <SwiperSlide key={index}>
             <div className="relative w-full h-full">
               <Image
