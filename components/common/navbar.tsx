@@ -36,7 +36,7 @@ export function Navbar({
   return (
     <nav
       className={cn(
-        "relative z-50  w-full bg-primaryBlue text-primaryBlue-foreground rounded-br-[60px] md:rounded-br-[80px] md:rounded-bl-[80px] rounded-bl-[60px] flex flex-col",
+        "relative z-50  w-full bg-primaryBlue text-primaryBlue-foreground rounded-br-[30px] md:rounded-br-[80px] md:rounded-bl-[80px] rounded-bl-[30px] flex flex-col",
         navbarClasses
       )}
     >
@@ -152,7 +152,7 @@ export function Navbar({
         {showSearchBar && (
           <div
             className={cn(
-              "md:mt-4 w-full mx-auto  md:px-4 md:mb-[-2.4rem]",
+              "md:mt-4 w-full mx-auto  md:px-4 mb-[-2.4rem]",
               searchComponentWrapperClasses
             )}
           >

@@ -35,21 +35,21 @@ const VenueCard: React.FC<VenueCardProps> = ({
   images,
 }) => {
   return (
-    <div className="flex flex-col  w-full    rounded-lg shadow-lg overflow-hidden bg-white">
+    <div className="flex flex-col  w-full  gap-0   rounded-lg shadow-lg overflow-hidden bg-white">
       <div className="bg-[#234C86] inline-flex items-center h-10 py-5 px-4">
         <p className="text-sm font-normal text-white">
           Evenure Preferred Property
         </p>
       </div>
-      <div className="flex flex-col lg:flex-row w-full   border rounded-b-lg shadow-lg overflow-hidden bg-white">
+      <div className="flex flex-col lg:flex-row w-full    rounded-b-lg shadow-lg overflow-hidden bg-white">
         {/* Left Image Carousel */}
         <div className="w-full lg:w-[254px] relative">
           <ImageCarousel
             images={images}
             autoPlay={false}
-            aspectRatio="4/4 "
-            className="max-w-xl max-h-[254px] mx-auto"
-            imageClassName="rounded-bl-sm"
+            aspectRatio="4/4"
+            className=" aspect-[16/12] lg:aspect-[4/4] md:aspect-[4/4]  mx-auto"
+            imageClassName="rounded-bl-sm aspect-[16/12] lg:aspect-[4/4] md:aspect-[4/4]"
             showArrows={false}
           />
 
@@ -90,7 +90,7 @@ const VenueCard: React.FC<VenueCardProps> = ({
           </div>
 
           {/* Pricing */}
-          <div className="mt-3 border border-black/10 p-4 rounded-sm ">
+          <div className="mt-6 md:mt-3 sm:border border-black/10 md:p-4 rounded-sm ">
             <div className="flex items-center justify-between">
               <div>
                 <div className="flex items-center text-gray-600 text-sm">

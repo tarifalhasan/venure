@@ -230,15 +230,15 @@ export function ImageCarousel({
           {images.map((image, index) => (
             <CarouselItem key={index}>
               <div
-                className={cn("relative overflow-hidden", imageClassName)}
-                style={{ aspectRatio }}
+                className={cn("relative  overflow-hidden", imageClassName)}
+                // style={{ aspectRatio }}
               >
                 <Image
                   src={image.src || "/placeholder.svg?height=600&width=800"}
                   alt={image.alt || "Carousel image"}
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className="object-cover"
+                  className="object-cover w-full"
                   priority={index === 0}
                 />
               </div>

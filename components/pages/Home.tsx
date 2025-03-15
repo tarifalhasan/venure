@@ -95,7 +95,7 @@ export default function HomePage() {
   return (
     <main className="min-h-screen flex w-full flex-col gap-[60px]">
       <Navbar showSearchType={true}>
-        <div className="mx-auto pt-10 pb-7 space-y-8">
+        <div className="md:block hidden mx-auto pt-10 pb-7 space-y-8">
           <div className="space-y-4">
             <h2 className="text-3xl md:text-4xl xl:text-5xl font-bold text-primaryBlue-foreground">
               Book your Venue

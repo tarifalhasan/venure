@@ -3,17 +3,16 @@
 import { Footer } from "@/components/common/footer";
 import { Navbar } from "@/components/common/navbar";
 import { Newsletter } from "@/components/common/news-letter";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Star } from "lucide-react";
+import { useVendorsQuery } from "@/queries/vendorsQueries";
+import { useState } from "react";
 import { SearchHeader } from "./_components/search-header";
 import { SearchResultsHeader } from "./_components/search-results-header";
 import { VenueFilters } from "./_components/venue-filters";
 import { VenueResultsPagination } from "./_components/venue-results-pagination";
 import VenueCard from "./_components/VenueCard";
-import { useVendorsQuery } from "@/queries/vendorsQueries";
 
 export default function SearchResults() {
+  const [isShowFilter, setShowFilter] = useState(false);
   const {
     data: vendors,
     isLoading: isLoadingVendors,
@@ -22,38 +21,38 @@ export default function SearchResults() {
   //call search function or others
   return (
     <>
-      <Navbar navbarClasses="" searchComponentWrapperClasses="w-full   max-w-[90%] " />
-      <div className="container mx-auto pt-20 flex flex-col gap-y-10 ">
+      <Navbar
+        navbarClasses=""
+        searchComponentWrapperClasses="w-full   max-w-[90%] "
+      />
+      <div className="container mx-auto pt-20 flex flex-col gap-y-6 lg:gap-y-10 ">
         <SearchHeader resultCount={1280} searchTerm="Venue" />
         <div className="flex flex-col lg:flex-row items-start gap-8">
-          <div className="w-full lg:w-[280px] xl:w-[400px]">
-            <div className=" flex  mx-auto max-w-[20rem] justify-center md:hidden">
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant="outline" size="sm" className="w-full">
-                    <Star className="w-4 h-4 mr-2" />
-                    Show Filters
-                  </Button>
-                </SheetTrigger>
-                <SheetContent className="w-[85%]">
-                  <VenueFilters onFilterChange={(filters) => console.log(filters)} />
-                </SheetContent>
-              </Sheet>
-            </div>
-            <div className="hidden w-full md:block">
+          <div className="w-full hidden  md:block lg:w-[280px] xl:w-[400px]">
+            <div className="w-full">
               <div className="mt-2">
-                <VenueFilters onFilterChange={(filters) => console.log(filters)} />
+                <VenueFilters
+                  onFilterChange={(filters) => console.log(filters)}
+                />
               </div>
             </div>
           </div>
 
           {/* Results */}
-          <div className="flex-1 flex flex-col gap-y-8 px-4">
+          <div className="flex-1 w-full flex flex-col gap-y-8">
             <SearchResultsHeader
               onSortChange={(value) => console.log(value)}
               onTabChange={(value) => console.log(value)}
+              setShowFilterMobile={setShowFilter}
+              isShowFilter={isShowFilter}
             />
-            <div className="grid   flex-1 gap-6">
+
+            {isShowFilter && (
+              <VenueFilters
+                onFilterChange={(filters) => console.log(filters)}
+              />
+            )}
+            <div className="grid w-full  flex-1 gap-6">
               {[1, 2, 3, 4].map((venue) => (
                 <VenueCard
                   key={venue}

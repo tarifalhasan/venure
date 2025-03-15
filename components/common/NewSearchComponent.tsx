@@ -83,7 +83,7 @@ export function SearchForm({ showSearchType = false }: SearchFormProps) {
   return (
     <div className="relative mx-auto max-w-[850px]">
       {showSearchType && (
-        <div className="flex items-center gap-4 mb-4 flex-wrap">
+        <div className="hidden md:flex items-center gap-4 mb-4 flex-wrap">
           {SEARCH_TYPE.map((item) => (
             <button
               key={item.id}
@@ -103,7 +103,7 @@ export function SearchForm({ showSearchType = false }: SearchFormProps) {
 
       {/* Main Search Box */}
       <div
-        className="flex flex-col border border-[#ddd] bg-white rounded-md md:rounded-full lg:items-center md:h-[66px] lg:flex-row gap-4 w-full py-4 mx-auto px-2"
+        className="flex  border border-[#ddd] bg-white rounded-full items-center md:h-[66px] lg:flex-row gap-4 w-full py-2 md:py-4 mx-auto px-2"
         style={{
           boxShadow:
             "0px 3px 12px 0px rgba(0, 0, 0, 0.10), 0px 1px 2px 0px rgba(0, 0, 0, 0.08)",
@@ -145,7 +145,7 @@ export function SearchForm({ showSearchType = false }: SearchFormProps) {
         </div>
 
         {/* Date Picker */}
-        <div className="border-l pl-4 border-[#DDD]">
+        <div className="border-l  pl-4 border-[#DDD]">
           <h3 className="text-xs text-foreground font-medium mb-0.5">Date</h3>
           <Popover>
             <PopoverTrigger asChild>
@@ -153,23 +153,26 @@ export function SearchForm({ showSearchType = false }: SearchFormProps) {
                 id="date"
                 variant={"outline"}
                 className={cn(
-                  "w-[300px] h-auto rounded-none border-none py-0 px-0 hover:bg-transparent justify-start text-left font-normal text-sm text-[#6A6A6A]",
+                  "md:w-[300px] h-auto rounded-none border-none py-0 px-0 hover:bg-transparent justify-start text-left font-normal text-sm text-[#6A6A6A]",
                   !date && "text-muted-foreground"
                 )}
               >
                 <CalendarIcon />
-                {date?.from ? (
-                  date.to ? (
-                    <>
-                      {format(date.from, "LLL dd, y")} -{" "}
-                      {format(date.to, "LLL dd, y")}
-                    </>
+                <span className="lg:hidden">From and To</span>
+                <span className="hidden lg:block">
+                  {date?.from ? (
+                    date.to ? (
+                      <>
+                        {format(date.from, "LLL dd, y")} -{" "}
+                        {format(date.to, "LLL dd, y")}
+                      </>
+                    ) : (
+                      format(date.from, "LLL dd, y")
+                    )
                   ) : (
-                    format(date.from, "LLL dd, y")
-                  )
-                ) : (
-                  <span>Pick a date</span>
-                )}
+                    <span>Pick a date</span>
+                  )}
+                </span>
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="end">

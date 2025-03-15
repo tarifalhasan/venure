@@ -16,8 +16,8 @@ interface SearchHeaderProps {
 
 export function SearchHeader({ resultCount, searchTerm }: SearchHeaderProps) {
   return (
-    <div className="flex flex-col md:flex-row gap-8  items-center">
-      <div className="lg:w-[420px]">
+    <div className="flex flex-col md:flex-row gap-4 lg:gap-8  lg:items-center">
+      <div className=" hidden lg:block lg:w-[400px]">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
