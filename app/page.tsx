@@ -1,6 +1,10 @@
-import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
 import HomePage from "@/components/pages/Home";
 import { VenueService } from "@/services/venueService";
+import {
+  HydrationBoundary,
+  QueryClient,
+  dehydrate,
+} from "@tanstack/react-query";
 
 interface PageParams {
   searchParams: Promise<{ currentPage?: number; itemsPerPage?: number }>;
@@ -25,11 +29,13 @@ export default async function Page({ searchParams }: PageParams) {
     }),
     queryClient.prefetchQuery({
       queryKey: ["someVenues"],
-      queryFn: async () => await VenueService.getSomeVenues(currentPage, itemsPerPage),
+      queryFn: async () =>
+        await VenueService.getSomeVenues(currentPage, itemsPerPage),
     }),
     queryClient.prefetchQuery({
       queryKey: ["dealsVenues"],
-      queryFn: async () => await VenueService.getDealsVenues(currentPage, itemsPerPage),
+      queryFn: async () =>
+        await VenueService.getDealsVenues(currentPage, itemsPerPage),
     }),
   ]);
 

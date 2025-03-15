@@ -1,9 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import Lottie from "lottie-react";
+import { useEffect } from "react";
+
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
+
 import ErrorAnimation from "@/assets/animations/error.json"; // Your Lottie animation
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 
 export default function GlobalError({
@@ -22,13 +25,19 @@ export default function GlobalError({
   return (
     <div className="flex flex-col items-center justify-center h-screen w-screen bg-gray-100 text-center px-6">
       <div className="w-full max-w-[350px] sm:max-w-[450px]">
-        <Lottie animationData={ErrorAnimation} loop autoplay className="w-full h-auto" />
+        <Lottie
+          animationData={ErrorAnimation}
+          loop
+          autoplay
+          className="w-full h-auto"
+        />
       </div>
       <p className="text-3xl font-semibold text-red-700 sm:text-4xl">
         Oops! Something went wrong.
       </p>
       <p className="text-lg text-gray-600 max-w-md mt-2">
-        There was an issue loading this page. Please try again or go back to the homepage.
+        There was an issue loading this page. Please try again or go back to the
+        homepage.
       </p>
       <div className="mt-6 flex gap-4">
         <Button
