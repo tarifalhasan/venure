@@ -158,8 +158,10 @@ export function SearchForm({ showSearchType = false }: SearchFormProps) {
                 )}
               >
                 <CalendarIcon />
-                <span className="lg:hidden">From and To</span>
-                <span className="hidden lg:block">
+                <span className="lg:hidden text-xs font-normal text-[#6A6A6A]">
+                  From and To
+                </span>
+                <span className="hidden lg:block text-xs font-normal text-[#6A6A6A]">
                   {date?.from ? (
                     date.to ? (
                       <>
