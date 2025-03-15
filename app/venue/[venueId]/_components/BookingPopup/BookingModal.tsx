@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -11,7 +10,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { toast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { CheckIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -20,6 +21,38 @@ import AddDetailsForm from "./AddDetailsForm";
 import BookingComplete from "./BookingComplete";
 import BookingDataForm from "./BookingDataForm";
 import OtpVerification from "./OtpVerification";
+
+// API function to create a booking
+const createBooking = async (bookingData: BookingRequest) => {
+  const response = await fetch("/api/bookings", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(bookingData),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "Failed to create booking");
+  }
+
+  return response.json();
+};
+
+// API request type
+interface BookingRequest {
+  venueId: number;
+  vendorIds: number[];
+  siteId: number;
+  bookingType: string;
+  bookingStartDate: string;
+  bookingEndDate: string;
+  visitorName: string;
+  visitorEmail: string;
+  visitorPhonenumber: string;
+  specialRequest: string;
+}
 
 const steps = [
   { id: 1, label: "Booking Data", component: BookingDataForm },
@@ -36,22 +69,60 @@ const formSchema = z.object({
   phone: z.string().min(10, "Phone number is required"),
   requests: z.string().optional(),
   otp: z.string().length(4, "OTP must be 4 digits"),
+  // Adding hidden fields for API requirements
+  venueId: z.number().default(0),
+  vendorIds: z.array(z.number()).default([0]),
+  siteId: z.number().default(0),
+  bookingType: z.string().default("standard"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
 export function BookingModalPopup() {
   const [currentStep, setCurrentStep] = useState(0);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   const methods = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     mode: "onChange",
+    defaultValues: {
+      venueId: 0,
+      vendorIds: [0],
+      siteId: 0,
+      bookingType: "standard",
+      requests: "",
+    },
   });
 
   const {
     handleSubmit,
     trigger,
     formState: { errors },
+    reset,
+    watch,
   } = methods;
+
+  // Create booking mutation
+  const bookingMutation = useMutation({
+    mutationFn: createBooking,
+    onSuccess: () => {
+      toast({
+        title: "Booking successful",
+        description: "Your booking has been confirmed.",
+      });
+      // Reset form and close dialog after successful booking
+      reset();
+      setCurrentStep(0);
+      setIsDialogOpen(false);
+    },
+    onError: (error) => {
+      toast({
+        title: "Booking failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
 
   const StepComponent = steps[currentStep].component;
 
@@ -68,10 +139,34 @@ export function BookingModalPopup() {
   const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 0));
 
   const onSubmit = (data: FormValues) => {
-    setCurrentStep(0);
+    // Convert form data to API request format
+    const selectedDate = data.date;
+    const [hours, minutes] = data.time.split(":").map(Number);
 
-    console.log(data);
-    // Handle form submission
+    // Create start date with selected time
+    const startDate = new Date(selectedDate);
+    startDate.setHours(hours, minutes);
+
+    // Create end date (assuming 1 hour duration, adjust as needed)
+    const endDate = new Date(startDate);
+    endDate.setHours(startDate.getHours() + 1);
+
+    // Prepare booking request
+    const bookingRequest: BookingRequest = {
+      venueId: data.venueId,
+      vendorIds: data.vendorIds,
+      siteId: data.siteId,
+      bookingType: data.bookingType,
+      bookingStartDate: startDate.toISOString(),
+      bookingEndDate: endDate.toISOString(),
+      visitorName: data.fullName,
+      visitorEmail: data.email,
+      visitorPhonenumber: data.phone,
+      specialRequest: data.requests || "",
+    };
+
+    // Submit booking request
+    bookingMutation.mutate(bookingRequest);
   };
 
   const getFieldsToValidate = (step: number): (keyof FormValues)[] => {
@@ -88,7 +183,7 @@ export function BookingModalPopup() {
   };
 
   return (
-    <Dialog>
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
         <Button className="w-full bg-green-600 hover:bg-green-700 mb-3">
           BOOK PACKAGE
@@ -102,6 +197,16 @@ export function BookingModalPopup() {
           <FormProvider {...methods}>
             <form onSubmit={handleSubmit(onSubmit)} id="booking-form">
               <StepComponent />
+              {bookingMutation.isPending && (
+                <div className="text-center py-4">
+                  <p>Processing your booking...</p>
+                </div>
+              )}
+              {bookingMutation.isError && (
+                <div className="text-red-500 py-4">
+                  <p>Error: {bookingMutation.error.message}</p>
+                </div>
+              )}
             </form>
           </FormProvider>
         </ScrollArea>
@@ -129,22 +234,31 @@ export function BookingModalPopup() {
             </ol>
             <div className="flex gap-2">
               {currentStep > 0 && (
-                <Button onClick={prevStep} className="bg-gray-500">
+                <Button
+                  onClick={prevStep}
+                  className="bg-gray-500"
+                  disabled={bookingMutation.isPending}
+                >
                   <ChevronLeftIcon /> Back
                 </Button>
               )}
               {currentStep < steps.length - 1 ? (
-                <Button onClick={nextStep} className="bg-primaryBlue">
+                <Button
+                  onClick={nextStep}
+                  className="bg-primaryBlue"
+                  disabled={bookingMutation.isPending}
+                >
                   Next <ChevronRightIcon />
                 </Button>
               ) : (
-                <DialogClose
+                <Button
                   type="submit"
                   form="booking-form"
-                  className="bg-primaryBlue px-4 rounded-lg h-10 cursor-pointer text-white"
+                  className="bg-primaryBlue"
+                  disabled={bookingMutation.isPending}
                 >
-                  Finish
-                </DialogClose>
+                  {bookingMutation.isPending ? "Processing..." : "Finish"}
+                </Button>
               )}
             </div>
           </div>
