@@ -8,7 +8,7 @@ import { useState } from "react";
 import { VendorCard } from "./_components/VendorCard";
 import { ErrorSection, NoVenuesFound } from "@/components/common/Error_NoVenues_Sections";
 import { VendorSkeleton } from "@/components/skeletons/vendor-skeleton";
-import { VendorPagination } from "./_components/VendorPagination";
+import  { CommonPagination } from "@/components/common/common-pagination";
 
 export default function Vendors() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -62,7 +62,7 @@ export default function Vendors() {
           !isLoadingVendors &&
           !error && (
             <div className="mt-8 flex justify-center">
-              <VendorPagination
+              <CommonPagination
                 currentPage={vendorsResponse.currentPage}
                 totalPages={vendorsResponse.totalPages}
                 onPageChange={handlePageChange}

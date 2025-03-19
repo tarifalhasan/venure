@@ -8,8 +8,8 @@ import { useState } from "react";
 import { SearchHeader } from "./_components/search-header";
 import { SearchResultsHeader } from "./_components/search-results-header";
 import { VenueFilters } from "./_components/venue-filters";
-import { VenueResultsPagination } from "./_components/venue-results-pagination";
 import VenueCard from "./_components/VenueCard";
+import { CommonPagination } from "@/components/common/common-pagination";
 
 export default function SearchResults() {
   const [isShowFilter, setShowFilter] = useState(false);
@@ -75,7 +75,7 @@ export default function SearchResults() {
                   ]}
                 />
               ))}
-              <VenueResultsPagination />
+              <CommonPagination totalPages={3} currentPage={1} onPageChange={(page) => console.log(page)} />
             </div>
 
             {/* <VenueResults venues={[]} isLoading={false} /> */}

@@ -8,10 +8,10 @@ import { useState } from "react";
 import { SearchHeader } from "./_components/search-header";
 import { SearchResultsHeader } from "./_components/search-results-header";
 import { VenueFilters } from "./_components/venue-filters";
-import { VenueResultsPagination } from "./_components/venue-results-pagination";
 import VenueCard from "./_components/VenueCard";
 import { VenueFilterInput, VenueFilterResponse } from "@/types/venue";
 import { useVenueFilterMutation } from "@/queries/mutations/venuesMutations";
+import { CommonPagination } from "@/components/common/common-pagination";
 
 export default function SearchResults() {
   const [isShowFilter, setShowFilter] = useState(false);
@@ -162,7 +162,7 @@ export default function SearchResults() {
                 ))
               )}
               {filteredVenues && filteredVenues.totalPages > 1 && (
-                <VenueResultsPagination
+                <CommonPagination
                   currentPage={filteredVenues.currentPage}
                   totalPages={filteredVenues.totalPages}
                   onPageChange={handlePageChange}
