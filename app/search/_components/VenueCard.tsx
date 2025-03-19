@@ -37,9 +37,7 @@ const VenueCard: React.FC<VenueCardProps> = ({
   return (
     <div className="flex flex-col  w-full  gap-0   rounded-lg shadow-lg overflow-hidden bg-white">
       <div className="bg-[#234C86] inline-flex items-center h-10 py-5 px-4">
-        <p className="text-sm font-normal text-white">
-          Evenure Preferred Property
-        </p>
+        <p className="text-sm font-normal text-white">Evenure Preferred Property</p>
       </div>
       <div className="flex flex-col lg:flex-row w-full    rounded-b-lg shadow-lg overflow-hidden bg-white">
         {/* Left Image Carousel */}
@@ -77,9 +75,7 @@ const VenueCard: React.FC<VenueCardProps> = ({
         <div className="flex-1 p-4 flex flex-col justify-between">
           {/* Venue Info */}
           <div className="space-y-1">
-            <h3 className="text-lg xl:text-xl text-foreground font-semibold">
-              {name}
-            </h3>
+            <h3 className="text-lg xl:text-xl text-foreground font-semibold">{name}</h3>
             <div className="inline-flex items-center gap-2">
               <MapPin size={16} />
               <p className="text-sm text-skin-shade_gray_900">{location}</p>
@@ -111,7 +107,7 @@ const VenueCard: React.FC<VenueCardProps> = ({
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <div className="inline-flex py-[6px] px-3 rounded-full items-center bg-yellow-600 text-sm text-white">
+                <div className="inline-flex py-[6px] px-3 rounded-full items-center bg-[#EDA842] text-sm text-white">
                   <Star className="w-4 h-4 mr-1 fill-white" />
                   {rating}
                 </div>

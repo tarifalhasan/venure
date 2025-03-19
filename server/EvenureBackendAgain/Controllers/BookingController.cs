@@ -4,6 +4,7 @@ using EvenureBackendAgain.Dto.Settings;
 using EvenureBackendAgain.Models;
 using EvenureBackendAgain.Service;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Mail;
@@ -39,20 +40,56 @@ namespace EvenureBackendAgain.Controllers
                 //SpecialRequest = command.SpecialRequest
             };
 
-            try
-            {
-                await _context.Booking.AddAsync(booking);
-                await _context.SaveChangesAsync();
+            
+            await _context.Booking.AddAsync(booking);
+            //await _context.SaveChangesAsync();
                 
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
             int otp = new Random().Next(1000, 9999);
 
+            var otpObj = new Otp()
+            {
+                uniqueid = Guid.NewGuid().ToString(),
+                email = command.VisitorEmail,
+                otp = otp,
+                expiresin = DateTime.UtcNow.AddMinutes(5)
+            };
+            await _context.Otps.AddAsync(otpObj);
+            await _context.SaveChangesAsync();
+
             await SendEmailAsync(command.VisitorEmail, otp);
+            return Ok(new
+            {
+                bookingId = booking.bookingid,
+                trackingId = otpObj.uniqueid,
+                expiresIn = otpObj.expiresin
+            });
+        }
+        [HttpPost("confirm")]
+        public async Task<IActionResult> ConfirmBooking([FromBody] BookingConfirmCommand command)
+        {
+            var booking = await _context.Booking.FirstOrDefaultAsync(x => x.bookingid == command.BookingId);
+            if (booking == null)
+            {
+                return BadRequest("Invalid Booking Id");
+            }
+            var otp = await _context.Otps.FirstOrDefaultAsync(x =>
+                x.uniqueid == command.TrackingId &&
+                x.email == command.Email &&
+                x.otp == command.Otp &&
+                DateTime.UtcNow < x.expiresin
+            );
+
+            if (otp == null)
+            {
+                return BadRequest("Invalid Otp");
+            }
+
+            otp.expiresin = null;
+            otp.updateddate = DateTime.UtcNow;
+
+            booking.bookingstatus = "Confirmed";
+            await _context.SaveChangesAsync();
+
             return Ok();
         }
 

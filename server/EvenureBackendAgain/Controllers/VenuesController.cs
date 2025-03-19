@@ -1,6 +1,7 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
 using EvenureBackendAgain.Dto;
+using EvenureBackendAgain.Models;
 using EvenureBackendAgain.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,52 +25,35 @@ namespace EvenureBackendAgain.Controllers
         {
             // Get venues where ispreferred is true and join with site data
             var query = _context.venue
+                .Include(v=> v.site)
+                .Include(v=> v.VenueImages)
                 .Where(v => v.ispreferred)
-                .Join(_context.site, v => v.siteid, s => s.siteid, (v, s) => new
+                .Select(x => new
                 {
-                    v.venueid,
-                    v.venuename,
-                    siteName = s.sitename,
-                    siteCity = s.sitecity,
-                    siteCountry = s.sitecountry,
-                    venueCoverImage = v.venueimages3bucket // This will be replaced with the S3 URL
+                    x.venueid,
+                    x.venuename,
+                    siteName = x.site.sitename,
+                    siteCity = x.site.sitecity,
+                    siteCountry = x.site.sitecountry,
+                    venueCoverImage = x.VenueImages.FirstOrDefault(x=> x.iscoverimage).venueimagepath // This will be replaced with the S3 URL
                 });
 
-            // Calculate total items
             var totalItems = await query.CountAsync();
 
-            // Calculate total pages
             var totalPages = (int)Math.Ceiling(totalItems / (double)itemsPerPage);
 
-            // Get paginated venues
             var venues = await query
                 .Skip((currentPage - 1) * itemsPerPage)
                 .Take(itemsPerPage)
                 .ToListAsync();
 
-            // Fetch cover images from S3 for each venue
-            var venuesWithCoverImages = new List<object>();
-            foreach (var venue in venues)
-            {
-                string coverImageUrl = await GetVenueCoverImageFromS3(venue.venueid);
-                venuesWithCoverImages.Add(new
-                {
-                    venue.venueid,
-                    venue.venuename,
-                    venue.siteName,
-                    venue.siteCity,
-                    venue.siteCountry,
-                    venueCoverImage = coverImageUrl // Replace with the S3 URL
-                });
-            }
-
-            // Return formatted response
+           
             var response = new
             {
                 currentPage,
                 totalPages,
                 totalItems,
-                venues = venuesWithCoverImages
+                venues = venues
             };
 
             return Ok(response);
@@ -134,6 +118,8 @@ namespace EvenureBackendAgain.Controllers
             {
                 query = query
                     .Include(x => x.VenueFeatureMappings)
+                    .Include(x=> x.site)
+                    .Include(x=> x.VenueImages)
                     .Where(v => request.Features
                         .Any(id => v.VenueFeatureMappings
                             .Any(vfm => vfm.featureid == id)));
@@ -144,7 +130,7 @@ namespace EvenureBackendAgain.Controllers
             var totalPages = (int)Math.Ceiling(totalItems / (double)request.ItemsPerPage);
 
             var venues = await query
-                    .Join(_context.site, v => v.siteid, s => s.siteid, (v, s) => new
+                    .Select(v => new
                     {
                         v.venueid,
                         v.venuename,
@@ -167,10 +153,10 @@ namespace EvenureBackendAgain.Controllers
                         v.venuefloorplans3bucket,
                         v.venueheight,
                         v.venuetotalarea,
-                        siteName = s.sitename,
-                        siteCity = s.sitecity,
-                        siteCountry = s.sitecountry,
-                        venueCoverImage = v.venueimages3bucket != null ? v.venueimages3bucket : null
+                        siteName = v.site.sitename,
+                        siteCity = v.site.sitecity,
+                        siteCountry = v.site.sitecountry,
+                        venueCoverImage = v.VenueImages.FirstOrDefault(x=> x.iscoverimage).venueimagepath
                     })
                 .Skip((request.CurrentPage - 1) * request.ItemsPerPage)
                 .Take(request.ItemsPerPage)
@@ -192,14 +178,16 @@ namespace EvenureBackendAgain.Controllers
         {
             // Get venues where ispreferred is true and join with site data
             var query = _context.venue
-                .Join(_context.site, v => v.siteid, s => s.siteid, (v, s) => new
+                .Include(x => x.site)
+                .Include(x => x.VenueImages)
+                .Select(v => new
                 {
                     v.venueid,
                     v.venuename,
-                    siteName = s.sitename,
-                    siteCity = s.sitecity,
-                    siteCountry = s.sitecountry,
-                    venueCoverImage = v.venueimages3bucket != null ? v.venueimages3bucket : null
+                    siteName = v.site.sitename,
+                    siteCity = v.site.sitecity,
+                    siteCountry = v.site.sitecountry,
+                    venueCoverImage = v.VenueImages.FirstOrDefault(x => x.iscoverimage).venueimagepath
                 });
 
             // Calculate total items
@@ -230,6 +218,8 @@ namespace EvenureBackendAgain.Controllers
         public async Task<IActionResult> GetTopRatedVenues(int currentPage = 1, int itemsPerPage = 10)
         {
             var query = _context.venue
+            .Include(x => x.site)
+            .Include(x => x.VenueImages)
             .GroupJoin(_context.review,
                        v => v.venueid,
                        r => r.venueid,
@@ -249,15 +239,15 @@ namespace EvenureBackendAgain.Controllers
                 .Skip((currentPage - 1) * itemsPerPage)
                 .Take(itemsPerPage)
                 .Select(v => new { v.Venue, v.ReviewCount })
-                .Join(_context.site, v => v.Venue.siteid, s => s.siteid, (v, s) => new
+                .Select(v => new
                 {
                     v.Venue.venueid,
                     reviewCount = v.ReviewCount,
                     v.Venue.venuename,
-                    siteName = s.sitename,
-                    siteCity = s.sitecity,
-                    siteCountry = s.sitecountry,
-                    venueCoverImage = v.Venue.venueimages3bucket != null ? v.Venue.venueimages3bucket : null
+                    siteName = v.Venue.site.sitename,
+                    siteCity = v.Venue.site.sitecity,
+                    siteCountry = v.Venue.site.sitecountry,
+                    venueCoverImage = v.Venue.VenueImages.FirstOrDefault(x => x.iscoverimage).venueimagepath
                 })
                 .ToListAsync();
 
@@ -276,15 +266,17 @@ namespace EvenureBackendAgain.Controllers
         public async Task<IActionResult> GetVenueDeals(int currentPage = 1, int itemsPerPage = 10)
         {
             var query = _context.venue
+                .Include(x => x.site)
+                .Include(x => x.VenueImages)
                 .Where(v => v.venuepackagepdfs3bucket != null)  // Filter where PDF URL is not null
-                .Join(_context.site, v => v.siteid, s => s.siteid, (v, s) => new
+                .Select(v => new
                 {
                     v.venueid,
                     v.venuename,
-                    siteName = s.sitename,
-                    siteCity = s.sitecity,
-                    siteCountry = s.sitecountry,
-                    venueCoverImage = v.venueimages3bucket ?? null,
+                    siteName = v.site.sitename,
+                    siteCity = v.site.sitecity,
+                    siteCountry = v.site.sitecountry,
+                    venueCoverImage = v.VenueImages.FirstOrDefault(x=> x.iscoverimage).venueimagepath,
                     venuePackagePDF = v.venuepackagepdfs3bucket  // Include package PDF URL
                 });
 
@@ -299,11 +291,16 @@ namespace EvenureBackendAgain.Controllers
         [HttpGet("get-venue-details/{venueId}")]
         public async Task<IActionResult> GetVenueDetails(int venueId)
         {
-            string s3BucketName = "venue-media-bucket";
-            string s3FolderPath = $"venue-images/other-images/{venueId}/";
-            var images = await GetVenueImagesFromS3(venueId);
+            //string s3BucketName = "venue-media-bucket";
+            //string s3FolderPath = $"venue-images/other-images/{venueId}/";
+            //var images = await GetVenueImagesFromS3(venueId);
             // Fetch venue details and generate the image URLs from S3
             var venueDetails = await _context.venue
+                .Include(x => x.site)
+                    .ThenInclude(x=> x.vendors)
+                .Include(x => x.VenueImages)
+                .Include(x=> x.VenueFeatureMappings)
+                    .ThenInclude(x=> x.venuefeature)
                 .Where(v => v.venueid == venueId)
                 .Select(v => new
                 {
@@ -322,20 +319,19 @@ namespace EvenureBackendAgain.Controllers
                     v.venuemaxsizeinsquaremeters,
                     v.venuetype,
                     v.venuerating,
-                    venueImages = images,
+                    venueCoverImage = v.VenueImages.FirstOrDefault(x => x.iscoverimage).venueimagepath,
+                    venueImages = v.VenueImages.Where(x=> !x.iscoverimage),
                     venueFeatures = _context.venuefeature
                         .Where(f => _context.venuefeaturemapping
                                     .Any(vf => vf.venueid == venueId && vf.featureid == f.featureid))
                         .Select(f => f.featurename)
                         .ToList(),
-                    venueAmenities = new List<string> { "Wi-Fi", "Parking", "Catering" }, // Example amenities, customize as needed
-                    siteVendors = _context.vendor
-                        .Where(v => v.siteid == v.siteid) // You may need a correct relationship with vendors
-                        .Select(v => new
-                        {
-                            v.vendortype,
-                            v.vendorname
-                        }).ToList()
+                    venueAmenities = new List<string> { "Wi-Fi", "Parking", "Catering" }, 
+                    siteVendors = v.site.vendors.Select(v=> new 
+                    {
+                        v.vendortype,
+                        v.vendorname
+                    }).ToList()
                 }).FirstOrDefaultAsync();
 
             if (venueDetails == null)

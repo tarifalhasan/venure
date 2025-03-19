@@ -15,6 +15,8 @@ namespace EvenureBackendAgain.Service
         public DbSet<Review> review { get; set; }
         public DbSet<venuefeature> venuefeature { get; set; }
         public DbSet<venuefeaturemapping> venuefeaturemapping { get; set; }
+        public DbSet<VenueImages> venueImages { get; set; }
+        public DbSet<Otp> Otps { get; set; }
 
 
 
@@ -42,7 +44,17 @@ namespace EvenureBackendAgain.Service
 
             modelBuilder.Entity<Booking>().ToTable("booking");
             modelBuilder.Entity<Booking>()
-                .HasKey(rv => rv.bookingid);
+                .HasKey(rv => rv.bookingid); 
+            
+            modelBuilder.Entity<VenueImages>().ToTable("venueimages");
+            modelBuilder.Entity<VenueImages>()
+                .HasKey(rv => rv.venueimageid);
+
+            modelBuilder.Entity<Otp>().ToTable("otps");
+            modelBuilder.Entity<Otp>()
+                .HasKey(rv => rv.id);
+
+
         }
 
 

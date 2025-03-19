@@ -83,6 +83,7 @@ export default function HomePage() {
           items={venues}
           renderItem={(venue: Venue) => (
             <CommonCard
+              id={venue.venueid}
               title={venue.venuename}
               imageUrl={venue.venueCoverImage}
               subtitle={`${venue.siteName}, ${venue.siteCity}, ${venue.siteCountry}`}

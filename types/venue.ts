@@ -61,12 +61,12 @@ export interface VenueDetails {
   venuemaxsizeinsquaremeters: number;
   venuetype: string;
   venuerating: number;
-  venueImages: string[];
+  venueCoverImage?: string; // Added to match the JSON data
+  venueImages: string[]; // Already matches, can be empty array
   venueFeatures: string[];
   venueAmenities: string[];
   siteVendors: SiteVendor[];
 }
-
 
 
 //Reviews
@@ -85,4 +85,29 @@ export interface ReviewResponse {
   totalPages: number;
   totalItems: number;
   reviews: Review[];
+}
+
+
+export interface VenueFilterInput {
+  venuType: string; // Type of venue (e.g., "Banquet Hall")
+  destination: string; // Location or destination of the venue
+  minAttendees: number; // Minimum number of attendees
+  maxAttendees: number; // Maximum number of attendees
+  minSize: number; // Minimum size (likely in square meters)
+  maxSize: number; // Maximum size (likely in square meters)
+  minPrice: number; // Minimum price
+  maxPrice: number; // Maximum price
+  minRating: number; // Minimum rating (e.g., 0 to 5)
+  maxRating: number; // Maximum rating (e.g., 0 to 5)
+  adjustableSpace: boolean; // Whether the venue has adjustable space
+  features: number[]; // Array of feature IDs (assuming numbers represent feature IDs)
+  currentPage: number; // Current page for pagination
+  itemsPerPage: number; // Number of items per page for pagination
+}
+
+export interface VenueFilterResponse {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  venues: Venue[];
 }

@@ -32,6 +32,7 @@
 
         public ICollection<venuefeaturemapping> VenueFeatureMappings { get; set; } = new List<venuefeaturemapping>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
+        public ICollection<VenueImages> VenueImages { get; set; } = new List<VenueImages>();
     }
 }
 

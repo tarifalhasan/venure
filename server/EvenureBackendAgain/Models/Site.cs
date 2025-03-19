@@ -10,6 +10,7 @@ namespace EvenureBackendAgain.Models
         public string sitecountry { get; set; }
         public DateTime CreatedDate { get; set; }
         public ICollection<venue> Venues { get; set; } = new List<venue>();
+        public ICollection<vendor> vendors { get; set; } = new List<vendor>();
     }
 
 }

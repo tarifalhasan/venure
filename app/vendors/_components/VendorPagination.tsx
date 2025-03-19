@@ -10,17 +10,17 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-interface VenueResultsPaginationProps {
+interface VendorPaginationProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
 }
 
-export function VenueResultsPagination({
+export function VendorPagination({
   currentPage,
   totalPages,
   onPageChange,
-}: VenueResultsPaginationProps) {
+}: VendorPaginationProps) {
   const maxVisiblePages = 5;
 
   const getPageNumbers = (): (number | "ellipsis")[] => {
