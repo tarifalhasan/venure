@@ -11,7 +11,7 @@ export class VenueService {
     itemsPerPage: number = 10
   ): Promise<VenuesResponse> {
     const response = await apiClient.get<VenuesResponse>(
-      `/get-recommended-venues?currentPage=${currentPage}&itemsPerPage=${itemsPerPage}`
+      `/venue/get-recommended-venues?currentPage=${currentPage}&itemsPerPage=${itemsPerPage}`
     );
     return response.data;
   }
@@ -21,7 +21,7 @@ export class VenueService {
     itemsPerPage: number = 10
   ): Promise<VenuesResponse> {
     const response = await apiClient.get<VenuesResponse>(
-      `/get-some-venues?currentPage=${currentPage}&itemsPerPage=${itemsPerPage}`
+      `/venue/get-some-venues?currentPage=${currentPage}&itemsPerPage=${itemsPerPage}`
     );
     return response.data;
   }
@@ -31,7 +31,7 @@ export class VenueService {
     itemsPerPage: number = 10
   ): Promise<VenuesResponse> {
     const response = await apiClient.get<VenuesResponse>(
-      `/top-rated?currentPage=${currentPage}&itemsPerPage=${itemsPerPage}`
+      `/venue/top-rated?currentPage=${currentPage}&itemsPerPage=${itemsPerPage}`
     );
     return response.data;
   }
@@ -41,14 +41,14 @@ export class VenueService {
     itemsPerPage: number = 10
   ): Promise<VenuesResponse> {
     const response = await apiClient.get<VenuesResponse>(
-      `/get-venue-deals?currentPage=${currentPage}&itemsPerPage=${itemsPerPage}`
+      `/venue/get-venue-deals?currentPage=${currentPage}&itemsPerPage=${itemsPerPage}`
     );
     return response.data;
   }
 
   //get-venue-details
   static async getVenueDetails(venueId: string): Promise<VenueDetails> {
-    const response = await apiClient.get<VenueDetails>(`/get-venue-details/${venueId}`);
+    const response = await apiClient.get<VenueDetails>(`/venue/get-venue-details/${venueId}`);
     return response.data;
   }
 

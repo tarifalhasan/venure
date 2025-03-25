@@ -12,7 +12,6 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { CheckIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -21,38 +20,11 @@ import AddDetailsForm from "./AddDetailsForm";
 import BookingComplete from "./BookingComplete";
 import BookingDataForm from "./BookingDataForm";
 import OtpVerification from "./OtpVerification";
-
-// API function to create a booking
-const createBooking = async (bookingData: BookingRequest) => {
-  const response = await fetch("/api/bookings", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(bookingData),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || "Failed to create booking");
-  }
-
-  return response.json();
-};
-
-// API request type
-interface BookingRequest {
-  venueId: number;
-  vendorIds: number[];
-  siteId: number;
-  bookingType: string;
-  bookingStartDate: string;
-  bookingEndDate: string;
-  visitorName: string;
-  visitorEmail: string;
-  visitorPhonenumber: string;
-  specialRequest: string;
-}
+import type { BookingRequest, BookingResponse } from "@/types/booking"; // Import the type
+import {
+  useBookingMutation,
+  useBookingConfirmMutation,
+} from "@/queries/mutations/bookingMutations";
 
 const steps = [
   { id: 1, label: "Booking Data", component: BookingDataForm },
@@ -69,7 +41,6 @@ const formSchema = z.object({
   phone: z.string().min(10, "Phone number is required"),
   requests: z.string().optional(),
   otp: z.string().length(4, "OTP must be 4 digits"),
-  // Adding hidden fields for API requirements
   venueId: z.number().default(0),
   vendorIds: z.array(z.number()).default([0]),
   siteId: z.number().default(0),
@@ -81,6 +52,7 @@ type FormValues = z.infer<typeof formSchema>;
 export function BookingModalPopup() {
   const [currentStep, setCurrentStep] = useState(0);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [bookingResponse, setBookingResponse] = useState<BookingResponse | null>(null);
 
   const methods = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -102,18 +74,15 @@ export function BookingModalPopup() {
     watch,
   } = methods;
 
-  // Create booking mutation
-  const bookingMutation = useMutation({
-    mutationFn: createBooking,
-    onSuccess: () => {
+  // Booking creation mutation
+  const { mutate: createBooking, isPending: isBookingPending } = useBookingMutation({
+    onSuccess: (data) => {
+      setBookingResponse(data);
       toast({
-        title: "Booking successful",
-        description: "Your booking has been confirmed.",
+        title: "Booking created",
+        description: "Please verify your booking with the OTP sent to your email.",
       });
-      // Reset form and close dialog after successful booking
-      reset();
-      setCurrentStep(0);
-      setIsDialogOpen(false);
+      setCurrentStep(2); // Move to OTP verification step
     },
     onError: (error) => {
       toast({
@@ -124,13 +93,37 @@ export function BookingModalPopup() {
     },
   });
 
+  // Booking confirmation mutation
+  const { mutate: confirmBooking, isPending: isConfirmPending } =
+    useBookingConfirmMutation({
+      onSuccess: (data) => {
+        toast({
+          title: "Booking confirmed",
+          description: "Your booking has been successfully confirmed.",
+        });
+        setCurrentStep(3); // Move to completion step
+      },
+      onError: (error) => {
+        toast({
+          title: "Confirmation failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      },
+    });
+
   const StepComponent = steps[currentStep].component;
 
   const nextStep = async () => {
     const fieldsToValidate = getFieldsToValidate(currentStep);
     const isValid = await trigger(fieldsToValidate);
     if (isValid) {
-      setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
+      if (currentStep === 1) {
+        // Submit booking when moving from "Add Details" to "OTP Verification"
+        handleSubmit(onCreateBooking)();
+      } else {
+        setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
+      }
     } else {
       console.log("Validation errors:", errors);
     }
@@ -138,24 +131,19 @@ export function BookingModalPopup() {
 
   const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 0));
 
-  const onSubmit = (data: FormValues) => {
-    // Convert form data to API request format
+  const onCreateBooking = (data: FormValues) => {
     const selectedDate = data.date;
     const [hours, minutes] = data.time.split(":").map(Number);
 
-    // Create start date with selected time
     const startDate = new Date(selectedDate);
     startDate.setHours(hours, minutes);
 
-    // Create end date (assuming 1 hour duration, adjust as needed)
     const endDate = new Date(startDate);
     endDate.setHours(startDate.getHours() + 1);
 
-    // Prepare booking request
     const bookingRequest: BookingRequest = {
       venueId: data.venueId,
       vendorIds: data.vendorIds,
-      siteId: data.siteId,
       bookingType: data.bookingType,
       bookingStartDate: startDate.toISOString(),
       bookingEndDate: endDate.toISOString(),
@@ -165,8 +153,27 @@ export function BookingModalPopup() {
       specialRequest: data.requests || "",
     };
 
-    // Submit booking request
-    bookingMutation.mutate(bookingRequest);
+    createBooking(bookingRequest);
+  };
+
+  const onConfirmBooking = (data: FormValues) => {
+    if (!bookingResponse) {
+      toast({
+        title: "Error",
+        description: "No booking found to confirm",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const confirmRequest = {
+      bookingId: bookingResponse.bookingId,
+      trackingId: bookingResponse.trackingId,
+      email: data.email,
+      otp: parseInt(data.otp),
+    };
+
+    confirmBooking(confirmRequest);
   };
 
   const getFieldsToValidate = (step: number): (keyof FormValues)[] => {
@@ -179,6 +186,17 @@ export function BookingModalPopup() {
         return ["otp"];
       default:
         return [];
+    }
+  };
+
+  const handleFinalSubmit = () => {
+    if (currentStep === 2) {
+      handleSubmit(onConfirmBooking)();
+    } else if (currentStep === 3) {
+      reset();
+      setCurrentStep(0);
+      setIsDialogOpen(false);
+      setBookingResponse(null);
     }
   };
 
@@ -195,16 +213,11 @@ export function BookingModalPopup() {
         </DialogHeader>
         <ScrollArea className="h-[80vh] md:h-[85vh] w-full p-4">
           <FormProvider {...methods}>
-            <form onSubmit={handleSubmit(onSubmit)} id="booking-form">
-              <StepComponent />
-              {bookingMutation.isPending && (
+            <form onSubmit={handleSubmit(handleFinalSubmit)} id="booking-form">
+              <StepComponent  />
+              {(isBookingPending || isConfirmPending) && (
                 <div className="text-center py-4">
-                  <p>Processing your booking...</p>
-                </div>
-              )}
-              {bookingMutation.isError && (
-                <div className="text-red-500 py-4">
-                  <p>Error: {bookingMutation.error.message}</p>
+                  <p>Processing your request...</p>
                 </div>
               )}
             </form>
@@ -237,7 +250,7 @@ export function BookingModalPopup() {
                 <Button
                   onClick={prevStep}
                   className="bg-gray-500"
-                  disabled={bookingMutation.isPending}
+                  disabled={isBookingPending || isConfirmPending}
                 >
                   <ChevronLeftIcon /> Back
                 </Button>
@@ -246,7 +259,7 @@ export function BookingModalPopup() {
                 <Button
                   onClick={nextStep}
                   className="bg-primaryBlue"
-                  disabled={bookingMutation.isPending}
+                  disabled={isBookingPending || isConfirmPending}
                 >
                   Next <ChevronRightIcon />
                 </Button>
@@ -255,9 +268,9 @@ export function BookingModalPopup() {
                   type="submit"
                   form="booking-form"
                   className="bg-primaryBlue"
-                  disabled={bookingMutation.isPending}
+                  disabled={isBookingPending || isConfirmPending}
                 >
-                  {bookingMutation.isPending ? "Processing..." : "Finish"}
+                  {isConfirmPending ? "Processing..." : "Finish"}
                 </Button>
               )}
             </div>
