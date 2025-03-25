@@ -40,7 +40,7 @@ const formSchema = z.object({
   email: z.string().email("Invalid email address"),
   phone: z.string().min(10, "Phone number is required"),
   requests: z.string().optional(),
-  otp: z.string().length(4, "OTP must be 4 digits"),
+  otp: z.string().optional(), // OTP is optional
   venueId: z.number().default(0),
   vendorIds: z.array(z.number()).default([0]),
   siteId: z.number().default(0),
@@ -114,26 +114,66 @@ export function BookingModalPopup() {
 
   const StepComponent = steps[currentStep].component;
 
-  const nextStep = async () => {
-    const fieldsToValidate = getFieldsToValidate(currentStep);
-    const isValid = await trigger(fieldsToValidate);
-    if (isValid) {
-      if (currentStep === 1) {
-        // Submit booking when moving from "Add Details" to "OTP Verification"
-        handleSubmit(onCreateBooking)();
-      } else {
-        setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
+const nextStep = async () => {
+  const fieldsToValidate = getFieldsToValidate(currentStep);
+  const isValid = await trigger(fieldsToValidate);
+  console.log("Step:", currentStep, "Is Valid:", isValid);
+  if (isValid) {
+    if (currentStep === 1) {
+      console.log("Attempting to submit booking");
+      try {
+        const formData = watch(); // Get current form values
+        console.log("Current form data before submission:", formData);
+
+        const isFullFormValid = await trigger(); // Validate entire form
+        console.log("Full form validation result:", isFullFormValid);
+
+        if (isFullFormValid) {
+          await handleSubmit(
+            async (data) => {
+              console.log("Inside handleSubmit with data:", data);
+              await onCreateBooking(data);
+            },
+            (errors) => {
+              console.log("handleSubmit validation errors:", errors); // Log validation errors
+            }
+          )();
+          console.log("handleSubmit completed");
+        } else {
+          console.log("Full form validation failed, check errors:", errors);
+        }
+      } catch (error) {
+        console.error("handleSubmit threw an error:", error);
       }
     } else {
-      console.log("Validation errors:", errors);
+      setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
     }
-  };
+  } else {
+    console.log("Validation errors for step:", errors);
+  }
+};
 
   const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 0));
 
-  const onCreateBooking = (data: FormValues) => {
+  const onCreateBooking = async (data: FormValues) => {
+    console.log("onCreateBooking triggered with data:", data);
     const selectedDate = data.date;
-    const [hours, minutes] = data.time.split(":").map(Number);
+
+    // Parse time string (e.g., "09:00 AM" or "14:00")
+    let hours: number, minutes: number;
+    if (data.time.includes("AM") || data.time.includes("PM")) {
+      const [timePart, period] = data.time.split(" ");
+      [hours, minutes] = timePart.split(":").map(Number);
+      if (period === "PM" && hours !== 12) hours += 12;
+      if (period === "AM" && hours === 12) hours = 0;
+    } else {
+      [hours, minutes] = data.time.split(":").map(Number);
+    }
+
+    // Validate parsed values
+    if (isNaN(hours) || isNaN(minutes)) {
+      throw new Error("Invalid time format in data.time");
+    }
 
     const startDate = new Date(selectedDate);
     startDate.setHours(hours, minutes);
