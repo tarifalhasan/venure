@@ -2,7 +2,8 @@
 {
     public class VenueSearchRequest
     {
-        public string? VenuType { get; set; } // Indoor, Outdoor, Hybrid
+        public string? SearchText { get; set; } // Search in address
+        public string? venueType { get; set; } // Indoor, Outdoor, Hybrid
         public string? Destination { get; set; } // City, Country, Site, or Venue name
         public int? MinAttendees { get; set; }
         public int? MaxAttendees { get; set; }
@@ -13,6 +14,8 @@
         public float? MinRating { get; set; }
         public float? MaxRating { get; set; }
         public bool? AdjustableSpace { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public List<int>? Features { get; set; }
         public int CurrentPage { get; set; } = 1;
         public int ItemsPerPage { get; set; } = 10;

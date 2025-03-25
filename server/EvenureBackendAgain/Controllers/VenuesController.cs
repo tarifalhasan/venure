@@ -65,9 +65,16 @@ namespace EvenureBackendAgain.Controllers
         {
             var query = _context.venue.AsQueryable();
 
-            if(request.VenuType != null)
+            if(request.SearchText != null)
             {
-                query = query.Where(x => x.venuetype == request.VenuType);
+                query = query.Where(x => 
+                    x.venueaddress.Contains(request.SearchText)
+                    || x.venuename.Contains(request.SearchText)
+                );
+            }
+            if(request.venueType != null)
+            {
+                query = query.Where(x => x.venuetype == request.venueType);
             }
             if (request.Destination != null)
             {
@@ -129,12 +136,18 @@ namespace EvenureBackendAgain.Controllers
             var totalItems = await query.CountAsync();
             var totalPages = (int)Math.Ceiling(totalItems / (double)request.ItemsPerPage);
 
+            if(totalItems == 0)
+            {
+                query = _context.venue.Where(x => x.ispreferred);
+            }
+
             var venues = await query
+                    .Include(x => x.Reviews)
                     .Select(v => new
                     {
                         v.venueid,
                         v.venuename,
-                        v.siteid,
+                        //v.siteid,
                         v.venueaddress,
                         v.venueaward,
                         v.venueprice,
@@ -153,10 +166,16 @@ namespace EvenureBackendAgain.Controllers
                         v.venuefloorplans3bucket,
                         v.venueheight,
                         v.venuetotalarea,
+                        v.ispreferred,
+                        noOfReviews = v.Reviews.Count(),
                         siteName = v.site.sitename,
                         siteCity = v.site.sitecity,
                         siteCountry = v.site.sitecountry,
-                        venueCoverImage = v.VenueImages.FirstOrDefault(x=> x.iscoverimage).venueimagepath
+                        venueCoverImages = v.VenueImages.Select(x=> new { 
+                            imageId = x.venueimageid,
+                            isComverImage = x.iscoverimage,
+                            imagePath = x.venueimagepath
+                        })
                     })
                 .Skip((request.CurrentPage - 1) * request.ItemsPerPage)
                 .Take(request.ItemsPerPage)

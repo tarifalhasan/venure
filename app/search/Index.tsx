@@ -12,12 +12,21 @@ import VenueCard from "./_components/VenueCard";
 import { VenueFilterInput, VenueFilterResponse } from "@/types/venue";
 import { useVenueFilterMutation } from "@/queries/mutations/venuesMutations";
 import { CommonPagination } from "@/components/common/common-pagination";
+import { useSearchParams } from "next/navigation";
 
 export default function SearchResults() {
+  const searchParams = useSearchParams(); // Get searchParams from Next.js
+  const searchText = searchParams.get("searchText") || ""; // Extract searchText from query params
+  const startDate = searchParams.get("startDate") || ""; // Extract startDate from query params
+  const endDate = searchParams.get("endDate") || ""; // Extract endDate from query params
+  const venueType = searchParams.get("venueType") || ""; // Extract venueType from query params
+  const currentPage = searchParams.get("currentPage") || "1"; // Extract currentPage from query params
+  const itemsPerPage = searchParams.get("itemsPerPage") || "10"; // Extract itemsPerPage from query params
   const [isShowFilter, setShowFilter] = useState(false);
   const [filters, setFilters] = useState<VenueFilterInput>({
-    venuType: "",
-    destination: "",
+    searchText: searchText, // Set initial searchText from query params
+    venueType: venueType,
+    destination: searchText,
     minAttendees: 50,
     maxAttendees: 200,
     minSize: 30,
@@ -28,8 +37,10 @@ export default function SearchResults() {
     maxRating: 5,
     adjustableSpace: true,
     features: [],
-    currentPage: 1,
-    itemsPerPage: 10,
+    startDate: startDate, // Set initial startDate from query params
+    endDate: endDate, // Set initial endDate from query params
+    currentPage:parseInt(currentPage, 10),
+    itemsPerPage: parseInt(itemsPerPage, 10),
   });
   const [filteredVenues, setFilteredVenues] = useState<VenueFilterResponse | null>(null);
 

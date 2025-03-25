@@ -22,10 +22,10 @@ export function CommonCard({ id, title, subtitle, imageUrl }: CommonCardProps) {
           />
         </div>
         <CardHeader className="flex-1 p-4">
-          <CardTitle className="text-lg xl:text-xl text-black font-semibold cursor-pointer hover:underline line-clamp-2 overflow-hidden">
+          <CardTitle className="text-lg xl:text-xl text-black font-semibold cursor-pointer hover:underline line-clamp-1 overflow-hidden">
             {title}
           </CardTitle>
-          <p className="text-sm text-[#878D96] leading-[140%] line-clamp-2 overflow-hidden mt-1">
+          <p className="text-sm text-[#878D96] leading-[140%] line-clamp-1 overflow-hidden mt-1">
             {subtitle}
           </p>
         </CardHeader>

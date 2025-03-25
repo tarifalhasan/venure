@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Pagination,
   PaginationContent,
@@ -18,6 +19,7 @@ interface CommonPaginationProps {
   maxVisiblePages?: number; // Optional: Customize max visible page numbers
   className?: string; // Optional: Custom styling
   disabled?: boolean; // Optional: Disable pagination entirely
+  itemsPerPage?: number; // Optional: Number of items per page to include in searchParams
 }
 
 export function CommonPagination({
@@ -27,7 +29,11 @@ export function CommonPagination({
   maxVisiblePages = 5,
   className,
   disabled = false,
+  itemsPerPage = 10, // Default items per page
 }: CommonPaginationProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams(); // Get current query params
+
   const getPageNumbers = (): (number | "ellipsis")[] => {
     if (totalPages <= maxVisiblePages || totalPages === 0) {
       return Array.from({ length: totalPages }, (_, i) => i + 1);
@@ -61,6 +67,24 @@ export function CommonPagination({
 
   const pageNumbers = getPageNumbers();
 
+  // Handle page change and update searchParams
+  const handlePageChange = (page: number) => {
+    if (disabled || page === currentPage || page < 1 || page > totalPages) return;
+
+    // Create a new URLSearchParams object based on current params
+    const params = new URLSearchParams(searchParams.toString());
+
+    // Set currentPage and itemsPerPage in searchParams
+    params.set("currentPage", page.toString());
+    params.set("itemsPerPage", itemsPerPage.toString());
+
+    // Update the URL without reloading the page
+    router.push(`?${params.toString()}`);
+
+    // Call the provided onPageChange callback
+    onPageChange(page);
+  };
+
   // Early return if no pages to display
   if (totalPages === 0) {
     return null;
@@ -74,7 +98,7 @@ export function CommonPagination({
             href="#"
             onClick={(e) => {
               e.preventDefault();
-              if (!disabled && currentPage > 1) onPageChange(currentPage - 1);
+              handlePageChange(currentPage - 1);
             }}
             className={cn(
               "rounded-md transition-colors",
@@ -99,7 +123,7 @@ export function CommonPagination({
                 isActive={page === currentPage}
                 onClick={(e) => {
                   e.preventDefault();
-                  if (!disabled && page !== currentPage) onPageChange(page);
+                  handlePageChange(page);
                 }}
                 className={cn(
                   "rounded-md transition-colors",
@@ -121,7 +145,7 @@ export function CommonPagination({
             href="#"
             onClick={(e) => {
               e.preventDefault();
-              if (!disabled && currentPage < totalPages) onPageChange(currentPage + 1);
+              handlePageChange(currentPage + 1);
             }}
             className={cn(
               "rounded-md transition-colors",

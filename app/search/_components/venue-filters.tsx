@@ -14,8 +14,7 @@ interface VenueFiltersProps {
 
 export function VenueFilters({ onFilterChange }: VenueFiltersProps) {
   const [filters, setFilters] = useState<VenueFilterInput>({
-    venuType: "", // Maps to "setting", defaults to "" (visually "INDOOR")
-    destination: "", // Added for VenueFilterInput
+    venueType: "", // Maps to "setting", defaults to "" (visually "INDOOR")
     minAttendees: 50,
     maxAttendees: 200,
     minSize: 30,
@@ -68,13 +67,13 @@ export function VenueFilters({ onFilterChange }: VenueFiltersProps) {
                   className="rounded-[8px] border-primary shadow-2xl"
                   key={type}
                   variant={
-                    filters.venuType === type
+                    filters.venueType === type
                       ? "default"
-                      : type === "INDOOR" && !filters.venuType
+                      : type === "INDOOR" && !filters.venueType
                       ? "default"
                       : "outline"
                   }
-                  onClick={() => updateFilter("venuType", type)}
+                  onClick={() => updateFilter("venueType", type)}
                 >
                   {type}
                 </Button>
@@ -83,7 +82,7 @@ export function VenueFilters({ onFilterChange }: VenueFiltersProps) {
           </div>
 
           {/* Destination (New for VenueFilterInput) */}
-          <div>
+          {/* <div>
             <h4 className="text-sm text-skin-black font-medium mb-4">Destination</h4>
             <Input
               type="text"
@@ -92,7 +91,7 @@ export function VenueFilters({ onFilterChange }: VenueFiltersProps) {
               placeholder="Enter location (e.g., Bangkok)"
               className="w-full p-2 border border-input rounded-[8px] text-sm"
             />
-          </div>
+          </div> */}
 
           {/* Number of Attendees */}
           <div>

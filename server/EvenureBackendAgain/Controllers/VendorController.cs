@@ -23,7 +23,7 @@ namespace EvenureBackendAgain.Controllers
                 .Select(x => new
                 {
                     x.vendorid,
-                    x.siteid,
+                    //x.siteid,
                     x.vendorname,
                     x.vendortype,
                     x.vendorphonenumber,

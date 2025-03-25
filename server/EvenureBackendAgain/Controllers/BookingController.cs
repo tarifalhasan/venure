@@ -51,7 +51,7 @@ namespace EvenureBackendAgain.Controllers
                 uniqueid = Guid.NewGuid().ToString(),
                 email = command.VisitorEmail,
                 otp = otp,
-                expiresin = DateTime.UtcNow.AddMinutes(5)
+                expiresin = DateTime.UtcNow.AddMinutes(10)
             };
             await _context.Otps.AddAsync(otpObj);
             await _context.SaveChangesAsync();
