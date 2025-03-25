@@ -120,10 +120,8 @@ const nextStep = async () => {
   console.log("Step:", currentStep, "Is Valid:", isValid);
   if (isValid) {
     if (currentStep === 1) {
-      console.log("Attempting to submit booking");
       try {
         const formData = watch(); // Get current form values
-        console.log("Current form data before submission:", formData);
 
         const isFullFormValid = await trigger(); // Validate entire form
         console.log("Full form validation result:", isFullFormValid);
@@ -131,10 +129,9 @@ const nextStep = async () => {
         if (isFullFormValid) {
           await handleSubmit(
             async (data) => {
-              console.log("Inside handleSubmit with data:", data);
               await onCreateBooking(data);
             },
-            (errors) => {
+            (errors:any) => {
               console.log("handleSubmit validation errors:", errors); // Log validation errors
             }
           )();
@@ -210,7 +207,7 @@ const nextStep = async () => {
       bookingId: bookingResponse.bookingId,
       trackingId: bookingResponse.trackingId,
       email: data.email,
-      otp: parseInt(data.otp),
+      otp: parseInt(data.otp as string),
     };
 
     confirmBooking(confirmRequest);
