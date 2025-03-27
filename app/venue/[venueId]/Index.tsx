@@ -11,11 +11,12 @@ import { BookingModalPopup } from "./_components/BookingPopup/BookingModal";
 import HotelFeatures from "./_components/Features";
 import { NavigationTabs } from "./_components/NavigationTabs";
 import Packages from "./_components/Packages";
-import Partners from "./_components/Partners";
+import Vendors from "./_components/Vendors";
 import Reviews from "./_components/Reviews";
 import SpaceSelector from "./_components/SpaceSelector";
 import { VenueImageSlider } from "./_components/VenueImageSlider";
 import VenueListing from "./_components/VenueListing";
+import { useVendorsQuery } from "@/queries/vendorsQueries";
 
 function VenueDetails({
   venueId,
@@ -33,17 +34,21 @@ function VenueDetails({
   } = useVenueDetailsQuery(venueId);
 
   const {
-    data: reviews,
+    data: reviewsData,
     isLoading: isLoadingReviews,
     error: reviewError,
     refetch: refetchReviews,
   } = useReviewsQuery(venueId, params.currentPage, params.itemsPerPage);
 
+  const {
+    data: vendorsData,
+    isLoading: isLoadingVendors,
+    error: vendorError,
+    refetch: refetchVendors,
+  } = useVendorsQuery(params.currentPage, params.itemsPerPage); //venueId add later as first params,
   if (isLoadingDetails) {
     return <VenueDetailsSkeleton />;
   }
-
-  console.log(details);
 
   if (detailsError) {
     return <ErrorSection title="Venue Details" refetch={refetchDetails} />;
@@ -67,7 +72,12 @@ function VenueDetails({
             }}
           />
         </div>
-        <Partners />
+        <Vendors
+          vendorsResponse={vendorsData}
+          isLoading={isLoadingVendors}
+          error={vendorError}
+          vendorRefresh={refetchVendors}
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 flex flex-col gap-y-6">
@@ -109,7 +119,11 @@ function VenueDetails({
             <Packages />
 
             {/* Reviews */}
-            <Reviews />
+            <Reviews
+              reviewsResponse={reviewsData}
+              isLoading={isLoadingReviews}
+              error={reviewError}
+            />
           </div>
 
           {/* Sidebar */}
@@ -117,7 +131,7 @@ function VenueDetails({
             {/* <Sidebar /> */}
             <VenueListing />
             <div className="pb-4" />
-            <BookingModalPopup />
+            <BookingModalPopup venueId={venueId as any} />
           </div>
         </div>
       </div>

@@ -56,7 +56,7 @@ export class VenueService {
   // Updated method for filtered venues with POST request
   static async getVenueFiltered(filter: VenueFilterInput): Promise<VenueFilterResponse> {
     const response = await apiClient.post<VenueFilterResponse>(
-      "/get-venue-filtered",
+      "/venue/get-venue-filtered",
       filter
     );
     return response.data;

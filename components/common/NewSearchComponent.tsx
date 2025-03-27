@@ -18,7 +18,7 @@ interface SearchFormProps {
 
 export function SearchForm({ showSearchType = false }: SearchFormProps) {
   const router = useRouter();
-  const searchParams = useSearchParams(); // Get query params from URL
+  const searchParams = useSearchParams();
 
   // Extract initial values from searchParams
   const initialSearchText = searchParams.get("searchText") || "";
@@ -30,20 +30,23 @@ export function SearchForm({ showSearchType = false }: SearchFormProps) {
     : undefined;
   const initialVenueType = searchParams.get("venueType") || "venues";
 
-  // State initialization with searchParams values
-  const [searchText, setSearchText] = useState<string>(initialSearchText); // Renamed from location
-  const [date, setDate] = useState<DateRange | undefined>(
-    initialStartDate || initialEndDate
-      ? {
-          from: initialStartDate || new Date(2022, 0, 20),
-          to:
-            initialEndDate ||
-            (initialStartDate && addDays(initialStartDate, 20)) ||
-            addDays(new Date(2022, 0, 20), 20),
-        }
-      : { from: new Date(2022, 0, 20), to: addDays(new Date(2022, 0, 20), 20) } // Default as per original
-  );
-  const [venueType, setVenueType] = useState<string>(initialVenueType); // Renamed from searchType
+  // Default to current date and next day
+  const today = new Date();
+  const tomorrow = addDays(today, 1);
+
+  // State initialization
+  const [searchText, setSearchText] = useState<string>(initialSearchText);
+  const [date, setDate] = useState<DateRange | undefined>(() => {
+    if (initialStartDate || initialEndDate) {
+      return {
+        from: initialStartDate || today,
+        to:
+          initialEndDate || (initialStartDate ? addDays(initialStartDate, 1) : tomorrow),
+      };
+    }
+    return { from: today, to: tomorrow }; // Default when no params
+  });
+  const [venueType, setVenueType] = useState<string>(initialVenueType);
   const [filteredLocations, setFilteredLocations] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isClient, setIsClient] = useState(false);
@@ -67,7 +70,7 @@ export function SearchForm({ showSearchType = false }: SearchFormProps) {
     setIsClient(true);
   }, []);
 
-  // Sync state with searchParams changes
+  // Sync state with searchParams on change
   useEffect(() => {
     const currentSearchText = searchParams.get("searchText") || "";
     const currentStartDate = searchParams.get("startDate")
@@ -79,12 +82,18 @@ export function SearchForm({ showSearchType = false }: SearchFormProps) {
     const currentVenueType = searchParams.get("venueType") || "venues";
 
     setSearchText(currentSearchText);
-    setDate(
-      currentStartDate || currentEndDate
-        ? { from: currentStartDate, to: currentEndDate }
-        : { from: new Date(2022, 0, 20), to: addDays(new Date(2022, 0, 20), 20) }
-    );
     setVenueType(currentVenueType);
+
+    // Update date only if searchParams has dates; otherwise, keep or set default
+    if (currentStartDate || currentEndDate) {
+      setDate({
+        from: currentStartDate || today,
+        to:
+          currentEndDate || (currentStartDate ? addDays(currentStartDate, 1) : tomorrow),
+      });
+    } else {
+      setDate((prev) => prev || { from: today, to: tomorrow });
+    }
   }, [searchParams]);
 
   // Handle search text input change and autocomplete filtering
@@ -97,7 +106,7 @@ export function SearchForm({ showSearchType = false }: SearchFormProps) {
     setShowSuggestions(true);
   };
 
-  // Venue type options (renamed from SEARCH_TYPE)
+  // Venue type options
   const VENUE_TYPES = [
     { id: "venues", label: "Venues" },
     { id: "packages", label: "Packages" },
@@ -106,24 +115,19 @@ export function SearchForm({ showSearchType = false }: SearchFormProps) {
 
   // Search handler
   const handleSearch = () => {
-    if (!searchText.trim() || !date?.from || !date?.to) {
-      toast({
-        title: "Please enter a search query and select a date range.",
-        variant: "destructive",
-      });
-      return;
-    }
+    // if (!searchText.trim() || !date?.from || !date?.to) {
+    //   toast({
+    //     title: "Please enter a search query and select a date range.",
+    //     variant: "destructive",
+    //   });
+    //   return;
+    // }
     const searchParams = new URLSearchParams();
 
-    // Add venueType (always included)
     searchParams.set("venueType", venueType);
-
-    // Add searchText if provided
     if (searchText.trim()) {
       searchParams.set("searchText", searchText.trim());
     }
-
-    // Add startDate and endDate if provided
     if (date?.from) {
       searchParams.set("startDate", format(date.from, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
     }
@@ -131,7 +135,6 @@ export function SearchForm({ showSearchType = false }: SearchFormProps) {
       searchParams.set("endDate", format(date.to, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
     }
 
-    // Redirect to search page with query parameters
     const queryString = searchParams.toString();
     router.push(`/search?${queryString}`);
   };
@@ -205,37 +208,30 @@ export function SearchForm({ showSearchType = false }: SearchFormProps) {
                 id="date"
                 variant={"outline"}
                 className={cn(
-                  "md:w-[300px] h-auto rounded-none border-none py-0 px-0 hover:bg-transparent justify-start text-left font-normal text-sm text-[#6A6A6A]",
-                  !date && "text-muted-foreground"
+                  "md:w-[300px] h-auto rounded-none border-none py-0 px-0 hover:bg-transparent justify-start text-left font-normal text-sm text-[#6A6A6A]"
                 )}
               >
-                <CalendarIcon />
-                <span className="lg:hidden text-xs font-normal text-[#6A6A6A]">
-                  From and To
-                </span>
-                <span className="hidden lg:block text-xs font-normal text-[#6A6A6A]">
-                  {date?.from ? (
-                    date.to ? (
-                      <>
-                        {format(date.from, "LLL dd, y")} - {format(date.to, "LLL dd, y")}
-                      </>
-                    ) : (
-                      format(date.from, "LLL dd, y")
-                    )
-                  ) : (
-                    <span>Pick a date</span>
-                  )}
-                </span>
+                <CalendarIcon className="mr-2" />
+                {date?.from && date?.to ? (
+                  <span className="text-xs font-normal text-[#6A6A6A]">
+                    {format(date.from, "LLL dd, y")} - {format(date.to, "LLL dd, y")}
+                  </span>
+                ) : (
+                  <span className="text-xs font-normal text-[#6A6A6A]">
+                    {date?.from ? format(date.from, "LLL dd, y") : "Pick a date"}
+                  </span>
+                )}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="end">
               <Calendar
                 initialFocus
                 mode="range"
-                defaultMonth={date?.from}
+                defaultMonth={date?.from || today}
                 selected={date}
                 onSelect={setDate}
                 numberOfMonths={2}
+                disabled={(date) => date < today}
               />
             </PopoverContent>
           </Popover>
@@ -245,7 +241,7 @@ export function SearchForm({ showSearchType = false }: SearchFormProps) {
           className="w-12 h-12 rounded-full bg-[#FFA500] hover:bg-[#FFA500]/90"
           onClick={handleSearch}
         >
-          <SearchIcon size={6} />
+          <SearchIcon size={16} />
         </Button>
       </div>
     </div>

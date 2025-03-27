@@ -6,80 +6,95 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { ReviewCard } from "./ReviewCard";
+import { ReviewCard, ReviewCardSkeleton } from "./ReviewCard";
+import type { ReviewResponse } from "@/types/venue";
+import { useRouter } from "next/navigation";
+import { ErrorSection, NoVenuesFound } from "@/components/common/Error_NoVenues_Sections";
 
-const reviews = [
-  {
-    name: "Charlene",
-    date: "August 2024",
-    rating: 5,
-    review:
-      "Location was great, really near to the beach (just a 5 mins walk away!). Node and all the staff at Turtle Bay were really friendly and provided us many recommendations.",
-    yearsAgo: 9,
+// Reviews Component
+const Reviews = ({
+  reviewsResponse: { reviews, currentPage, totalPages, totalItems } = {
+    reviews: [],
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: 0,
   },
-  {
-    name: "Michael",
-    date: "July 2024",
-    rating: 4,
-    review:
-      "Beautiful venue with excellent service. The outdoor pool area is perfect for events.",
-    yearsAgo: 8,
-  },
-  {
-    name: "Sophia",
-    date: "June 2024",
-    rating: 5,
-    review:
-      "A hidden gem! Loved the private beach and the amazing sunset views.",
-    yearsAgo: 7,
-  },
-  {
-    name: "Daniel",
-    date: "May 2024",
-    rating: 4,
-    review: "Great experience overall, but the Wi-Fi could be better.",
-    yearsAgo: 6,
-  },
-  {
-    name: "Emily",
-    date: "April 2024",
-    rating: 5,
-    review:
-      "Perfect getaway! Excellent service, delicious food, and stunning location.",
-    yearsAgo: 5,
-  },
-];
+  isLoading,
+  error,
+}: {
+  reviewsResponse?: ReviewResponse;
+  isLoading: boolean;
+  error: any;
+}) => {
+  const router = useRouter();
 
-const Reviews = () => {
+  // Function to chunk reviews into pairs
+  const chunkReviews = (arr: any[], size: number) => {
+    const result = [];
+    for (let i = 0; i < arr.length; i += size) {
+      result.push(arr.slice(i, i + size));
+    }
+    return result;
+  };
+
+  const reviewPairs = chunkReviews(reviews, 2); // Group reviews into pairs
+
   return (
     <Card id="Reviews" className="w-full p-4">
-      <div className="flex flex-wrap items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-skin-black tracking-[-0.36px]">
-          Packages: Food & Beverages
+          Reviews ({totalItems})
         </h2>
-        <Button className="text-sm text-[#343A3F] font-bold uppercase bg-transparent border border-[#343A3F] hover:text-white h-10 rounded-[8px]">
-          show all
-        </Button>
+        {reviews.length > 0 && (
+          <Button
+            onClick={() => router.push(`/reviews/${reviews[0].venueid}`)}
+            className="text-sm text-[#343A3F] font-bold uppercase bg-transparent border border-[#343A3F] hover:text-white h-10 rounded-[8px]"
+          >
+            Show All
+          </Button>
+        )}
       </div>
-      <Swiper
-        modules={[Navigation, Pagination]}
-        spaceBetween={20}
-        slidesPerView={1}
-        navigation
-        pagination={{ clickable: true }}
-        className="py-6"
-      >
-        {reviews.map((review, index) => (
-          <SwiperSlide key={index}>
-            <div className="flex flex-col gap-6">
-              <ReviewCard key={index} {...review} />
-              {reviews[index + 1] && (
-                <ReviewCard key={index + 1} {...reviews[index + 1]} />
-              )}
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+
+      {isLoading ? (
+        <Swiper
+          modules={[Navigation, Pagination]}
+          spaceBetween={20}
+          slidesPerView={1}
+          className="py-6"
+        >
+          {Array.from({ length: 4 }).map((_, index) => (
+            <SwiperSlide key={index}>
+              <div className="flex flex-col gap-6">
+                <ReviewCardSkeleton />
+                <ReviewCardSkeleton />
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      ) : error ? (
+        <ErrorSection title="Reviews" />
+      ) : reviews.length === 0 ? (
+        <NoVenuesFound title="Reviews" />
+      ) : (
+        <Swiper
+          modules={[Navigation, Pagination]}
+          spaceBetween={20}
+          slidesPerView={1}
+          navigation
+          pagination={{ clickable: true }}
+          className="py-6"
+        >
+          {reviewPairs.map((pair, index) => (
+            <SwiperSlide key={index}>
+              <div className="flex flex-col gap-6">
+                {pair.map((review) => (
+                  <ReviewCard key={review.reviewid} {...review} />
+                ))}
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      )}
     </Card>
   );
 };

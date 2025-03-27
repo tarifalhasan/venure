@@ -15,6 +15,7 @@ namespace EvenureBackendAgain.Service
         public DbSet<Review> review { get; set; }
         public DbSet<venuefeature> venuefeature { get; set; }
         public DbSet<venuefeaturemapping> venuefeaturemapping { get; set; }
+        public DbSet<VendorSiteMapping> vendorsitemapping { get; set; }
         public DbSet<VenueImages> venueImages { get; set; }
         public DbSet<Otp> Otps { get; set; }
 
@@ -33,12 +34,47 @@ namespace EvenureBackendAgain.Service
                 .HasForeignKey(r => r.venueid)
                 .OnDelete(DeleteBehavior.Cascade);
 
+
+
             modelBuilder.Entity<venuefeature>()
                .HasKey(vf => vf.featureid);
 
             modelBuilder.Entity<venuefeaturemapping>()
                 .HasKey(vfm => vfm.venuefeaturemappingid);
-            
+
+            modelBuilder.Entity<venuefeaturemapping>()
+            .HasOne(vs => vs.venue)
+            .WithMany(v => v.VenueFeatureMappings)
+            .HasForeignKey(vs => vs.venueid)
+            .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<venuefeaturemapping>()
+                .HasOne(vs => vs.venuefeature)
+                .WithMany(s => s.VenueFeatureMappings)
+                .HasForeignKey(vs => vs.featureid)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+
+
+            modelBuilder.Entity<VendorSiteMapping>().ToTable("vendorsite_mapping");
+            modelBuilder.Entity<VendorSiteMapping>()
+                .HasKey(vfm => vfm.vendorsiteid);
+
+            modelBuilder.Entity<VendorSiteMapping>()
+            .HasOne(vs => vs.vendor)
+            .WithMany(v => v.VendorSiteMappings)
+            .HasForeignKey(vs => vs.vendorid)
+            .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<VendorSiteMapping>()
+                .HasOne(vs => vs.site)
+                .WithMany(s => s.VendorSiteMappings)
+                .HasForeignKey(vs => vs.siteid)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+
             modelBuilder.Entity<Review>()
                 .HasKey(rv => rv.reviewid);
 

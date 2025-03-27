@@ -1,3 +1,5 @@
+import type { VenueFilterItem } from "./search";
+
 // Vendor schema
 export interface Vendor {
   vendorid: number;
@@ -101,8 +103,8 @@ export interface VenueFilterInput {
   minRating: number; // Minimum rating (e.g., 0 to 5)
   maxRating: number; // Maximum rating (e.g., 0 to 5)
   adjustableSpace: boolean; // Whether the venue has adjustable space
-  startDate?: string; // Start date in ISO format (e.g., "2025-03-25T20:34:27.440Z")
-  endDate?: string; // End date in ISO format (e.g., "2025-03-25T20:34:27.440Z")
+  startDate?: string|Date; // Start date in ISO format (e.g., "2025-03-25T20:34:27.440Z")
+  endDate?: string|Date; // End date in ISO format (e.g., "2025-03-25T20:34:27.440Z")
   features: number[]; // Array of feature IDs (assuming numbers represent feature IDs)
   currentPage: number; // Current page for pagination
   itemsPerPage: number; // Number of items per page for pagination
@@ -112,5 +114,5 @@ export interface VenueFilterResponse {
   currentPage: number;
   totalPages: number;
   totalItems: number;
-  venues: Venue[];
+  venues: VenueFilterItem[];
 }

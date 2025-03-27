@@ -2,14 +2,14 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Camera, Music, Utensils } from "lucide-react"; // Assuming lucide-react is installed
-export enum PartnerTypeEnum {
+export enum VendorTypeEnum {
   Photographer = "photographer",
   DJ = "dj",
   Catering = "catering",
 }
-interface PartnerCardProps {
+interface VendorCardProps {
   name: string;
-  type: PartnerTypeEnum;
+  type: VendorTypeEnum;
   rating: number;
 }
 
@@ -19,12 +19,13 @@ const icons = {
   catering: Utensils,
 };
 
-export const PartnerCard = ({ name, type }: PartnerCardProps) => {
-  const Icon = icons[type]; // Dynamically select the icon based on 'type'
+export const VendorCard = ({ name, type }: VendorCardProps) => {
+  const Icon = icons[type]|| Utensils; // Dynamically select the icon based on 'type'
 
   return (
     <Card className="w-full bg-white">
-      <CardContent className="flex items-center justify-between py-4 px-4">
+      {/* items-center */}
+      <CardContent className="flex  justify-between py-4 px-4">
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <Avatar className="w-9 h-9 bg-gray-100">

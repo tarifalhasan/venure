@@ -12,7 +12,13 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CheckIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import {
+  CheckIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  Loader,
+  Loader2,
+} from "lucide-react";
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import * as z from "zod";
@@ -25,6 +31,7 @@ import {
   useBookingMutation,
   useBookingConfirmMutation,
 } from "@/queries/mutations/bookingMutations";
+import { AxiosError } from "axios";
 
 const steps = [
   { id: 1, label: "Booking Data", component: BookingDataForm },
@@ -41,15 +48,19 @@ const formSchema = z.object({
   phone: z.string().min(10, "Phone number is required"),
   requests: z.string().optional(),
   otp: z.string().optional(), // OTP is optional
-  venueId: z.number().default(0),
-  vendorIds: z.array(z.number()).default([0]),
-  siteId: z.number().default(0),
+  venueId: z.union([z.number(), z.string()]).default("1"), // Allow number or string
+  vendorIds: z.array(z.union([z.number(), z.string()])).default(["1"]), // Array of number or string
+  siteId: z.union([z.number(), z.string()]).default("1"), // Allow number or string
   bookingType: z.string().default("standard"),
 });
 
-type FormValues = z.infer<typeof formSchema>;
+export type FormValues = z.infer<typeof formSchema>;
 
-export function BookingModalPopup() {
+interface BookingModalPopupProps {
+  venueId: number; // Add venueId as a prop
+}
+
+export function BookingModalPopup({ venueId }: BookingModalPopupProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [bookingResponse, setBookingResponse] = useState<BookingResponse | null>(null);
@@ -58,9 +69,9 @@ export function BookingModalPopup() {
     resolver: zodResolver(formSchema),
     mode: "onChange",
     defaultValues: {
-      venueId: 0,
-      vendorIds: [0],
-      siteId: 0,
+      venueId,
+      vendorIds: [venueId, 1],
+      siteId: 1,
       bookingType: "standard",
       requests: "",
     },
@@ -84,10 +95,25 @@ export function BookingModalPopup() {
       });
       setCurrentStep(2); // Move to OTP verification step
     },
-    onError: (error) => {
+    onError: (error: unknown) => {
+      console.log("Confirmation error:", error); // Log for debugging
+      let title = "Booking failed, please try again";
+      let description = "An unknown error occurred";
+
+      if (typeof error === "string") {
+        title = error;
+      } else if (error instanceof AxiosError) {
+        title = error.response?.data?.message || error.message || "Request failed";
+        description =
+          error.response?.data?.description || "An error occurred during the request";
+      } else if (error instanceof Error) {
+        title = error.message;
+        description = "An error occurred during the request";
+      }
+
       toast({
-        title: "Booking failed",
-        description: error.message,
+        title,
+        description,
         variant: "destructive",
       });
     },
@@ -104,9 +130,29 @@ export function BookingModalPopup() {
         setCurrentStep(3); // Move to completion step
       },
       onError: (error) => {
+        // Log error in multiple ways for robustness
+        console.log("Booking confirmation error:", error); // Plain log
+        console.error("Error details:", { error }); // Explicit error log
+        console.dir(error); // Deep inspection of the error object
+
+        // Handle different error types
+        let errorTitle = "Confirmation failed, Please check your OTP and try again";
+        let errorDescription = "An unknown error occurred";
+
+        if (typeof error === "string") {
+          errorTitle = error; // If error is a string, use it as the title
+        } else if (error instanceof AxiosError && error.name === "AxiosError") {
+          errorTitle = error?.response?.data || error.message;
+        } else if (error instanceof Error) {
+          errorDescription = error.message; // Standard Error object
+        } else if (error && typeof error === "object") {
+          // Handle objects (e.g., Axios errors)
+          errorDescription = (error as any)?.message || JSON.stringify(error);
+        }
+
         toast({
-          title: "Confirmation failed",
-          description: error.message,
+          title: errorTitle,
+          description: errorDescription,
           variant: "destructive",
         });
       },
@@ -114,41 +160,36 @@ export function BookingModalPopup() {
 
   const StepComponent = steps[currentStep].component;
 
-const nextStep = async () => {
-  const fieldsToValidate = getFieldsToValidate(currentStep);
-  const isValid = await trigger(fieldsToValidate);
-  console.log("Step:", currentStep, "Is Valid:", isValid);
-  if (isValid) {
-    if (currentStep === 1) {
-      try {
-        const formData = watch(); // Get current form values
-
-        const isFullFormValid = await trigger(); // Validate entire form
-        console.log("Full form validation result:", isFullFormValid);
-
+  const nextStep = async () => {
+    const fieldsToValidate = getFieldsToValidate(currentStep);
+    const isValid = await trigger(fieldsToValidate);
+    console.log("Step:", currentStep, "Is Valid:", isValid);
+    if (isValid) {
+      if (currentStep === 1) {
+        // Booking creation
+        const isFullFormValid = await trigger();
+        const data = watch();
+        console.log({ isFullFormValid, data });
         if (isFullFormValid) {
-          await handleSubmit(
-            async (data) => {
-              await onCreateBooking(data);
-            },
-            (errors:any) => {
-              console.log("handleSubmit validation errors:", errors); // Log validation errors
-            }
-          )();
-          console.log("handleSubmit completed");
-        } else {
-          console.log("Full form validation failed, check errors:", errors);
+          await handleSubmit(async (data) => {
+            await onCreateBooking(data);
+          })();
         }
-      } catch (error) {
-        console.error("handleSubmit threw an error:", error);
+      } else if (currentStep === 2) {
+        // OTP verification
+        const isFullFormValid = await trigger(); // Ensure OTP is valid
+        if (isFullFormValid) {
+          await handleSubmit(async (data) => {
+            await onConfirmBooking(data);
+          })();
+        }
+      } else {
+        setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
       }
     } else {
-      setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
+      console.log("Validation errors for step:", errors);
     }
-  } else {
-    console.log("Validation errors for step:", errors);
-  }
-};
+  };
 
   const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 0));
 
@@ -179,8 +220,8 @@ const nextStep = async () => {
     endDate.setHours(startDate.getHours() + 1);
 
     const bookingRequest: BookingRequest = {
-      venueId: data.venueId,
-      vendorIds: data.vendorIds,
+      venueId: data.venueId as number,
+      vendorIds: data.vendorIds as number[],
       bookingType: data.bookingType,
       bookingStartDate: startDate.toISOString(),
       bookingEndDate: endDate.toISOString(),
@@ -227,36 +268,42 @@ const nextStep = async () => {
   };
 
   const handleFinalSubmit = () => {
-    if (currentStep === 2) {
-      handleSubmit(onConfirmBooking)();
-    } else if (currentStep === 3) {
+    // Handle final form submission
+    if (currentStep === 3) {
       reset();
       setCurrentStep(0);
       setIsDialogOpen(false);
       setBookingResponse(null);
     }
   };
+  const isLoading = isBookingPending || isConfirmPending;
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button className="w-full bg-green-600 hover:bg-green-700 mb-3">
+        <Button size={"lg"} className="w-full  mb-3 py-6 rounded-md">
           BOOK PACKAGE
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[1089px]">
+        {/* Loading Overlay */}
+        {isLoading && (
+          <div className="absolute inset-0 bg-gray-900/50 flex items-center justify-center z-50 rounded-lg">
+            <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center gap-4">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <p className="text-sm font-medium text-foreground">
+                {currentStep === 1 ? "Creating your booking..." : "Verifying OTP..."}
+              </p>
+            </div>
+          </div>
+        )}
         <DialogHeader>
           <DialogTitle>{steps[currentStep].label}</DialogTitle>
         </DialogHeader>
         <ScrollArea className="h-[80vh] md:h-[85vh] w-full p-4">
           <FormProvider {...methods}>
             <form onSubmit={handleSubmit(handleFinalSubmit)} id="booking-form">
-              <StepComponent  />
-              {(isBookingPending || isConfirmPending) && (
-                <div className="text-center py-4">
-                  <p>Processing your request...</p>
-                </div>
-              )}
+              <StepComponent />
             </form>
           </FormProvider>
         </ScrollArea>
@@ -298,7 +345,17 @@ const nextStep = async () => {
                   className="bg-primaryBlue"
                   disabled={isBookingPending || isConfirmPending}
                 >
-                  Next <ChevronRightIcon />
+                  {isBookingPending ? (
+                    <div className="flex items-center">
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Processing
+                    </div>
+                  ) : (
+                    <div className="flex items-center">
+                      {" "}
+                      Next <ChevronRightIcon className="ml-2" />
+                    </div>
+                  )}
                 </Button>
               ) : (
                 <Button

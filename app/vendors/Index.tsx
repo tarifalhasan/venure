@@ -20,7 +20,6 @@ export default function Vendors() {
     error,
     refetch,
   } = useVendorsQuery(currentPage, itemsPerPage);
-
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -40,7 +39,7 @@ export default function Vendors() {
         {/* Vendor Results */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {isLoadingVendors ? (
-            Array.from({ length: 8 }).map((_, index) => <VendorSkeleton key={index} />)
+            Array.from({ length: 10 }).map((_, index) => <VendorSkeleton key={index} />)
           ) : error ? (
             <div className="col-span-full">
               <ErrorSection title="vendors" refetch={refetch} className="min-h-[50vh]" />

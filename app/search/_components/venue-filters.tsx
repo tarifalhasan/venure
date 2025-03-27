@@ -6,7 +6,6 @@ import { Slider } from "@/components/ui/slider";
 import { Star } from "lucide-react";
 import { useState } from "react";
 import { VenueFilterInput } from "@/types/venue";
-import { Input } from "@/components/ui/input";
 
 interface VenueFiltersProps {
   onFilterChange: (filters: VenueFilterInput) => void;
@@ -15,18 +14,18 @@ interface VenueFiltersProps {
 export function VenueFilters({ onFilterChange }: VenueFiltersProps) {
   const [filters, setFilters] = useState<VenueFilterInput>({
     venueType: "", // Maps to "setting", defaults to "" (visually "INDOOR")
-    minAttendees: 50,
-    maxAttendees: 200,
-    minSize: 30,
-    maxSize: 150,
-    minPrice: 100,
-    maxPrice: 10000,
-    minRating: 2,
+    minAttendees: 0,
+    maxAttendees: 10000,
+    minSize: 0,
+    maxSize: 10000,
+    minPrice: 0,
+    maxPrice: 1000000,
+    minRating: 0,
     maxRating: 5,
     adjustableSpace: true,
-    features: [], // Now numeric IDs instead of strings
-    currentPage: 1, // Added for VenueFilterInput
-    itemsPerPage: 10, // Added for VenueFilterInput
+    features: [],
+    currentPage: 1,
+    itemsPerPage: 10,
   });
 
   const featureOptions = [
@@ -46,10 +45,23 @@ export function VenueFilters({ onFilterChange }: VenueFiltersProps) {
     key: K,
     value: VenueFilterInput[K]
   ) => {
-    setFilters((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
+    setFilters((prev) => {
+      const newFilters = { ...prev, [key]: value };
+      return newFilters;
+    });
+  };
+
+  // Handler to update slider values and ensure min <= max
+  const handleSliderChange = <K extends keyof VenueFilterInput>(
+    keyMin: K,
+    keyMax: K,
+    value: number[]
+  ) => {
+    const [min, max] = value;
+    if (min <= max) {
+      updateFilter(keyMin, min as VenueFilterInput[K]);
+      updateFilter(keyMax, max as VenueFilterInput[K]);
+    }
   };
 
   return (
@@ -81,18 +93,6 @@ export function VenueFilters({ onFilterChange }: VenueFiltersProps) {
             </div>
           </div>
 
-          {/* Destination (New for VenueFilterInput) */}
-          {/* <div>
-            <h4 className="text-sm text-skin-black font-medium mb-4">Destination</h4>
-            <Input
-              type="text"
-              value={filters.destination}
-              onChange={(e) => updateFilter("destination", e.target.value)}
-              placeholder="Enter location (e.g., Bangkok)"
-              className="w-full p-2 border border-input rounded-[8px] text-sm"
-            />
-          </div> */}
-
           {/* Number of Attendees */}
           <div>
             <div className="flex mb-6 items-center justify-between">
@@ -103,12 +103,13 @@ export function VenueFilters({ onFilterChange }: VenueFiltersProps) {
             </div>
             <Slider
               defaultValue={[filters.minAttendees, filters.maxAttendees]}
-              max={1000}
+              value={[filters.minAttendees, filters.maxAttendees]}
+              min={0}
+              max={10000} // Reasonable upper limit for UI
               step={10}
-              onValueChange={(value) => {
-                updateFilter("minAttendees", value[0]);
-                updateFilter("maxAttendees", value[1]);
-              }}
+              onValueChange={(value) =>
+                handleSliderChange("minAttendees", "maxAttendees", value)
+              }
               className="w-full"
             />
           </div>
@@ -128,12 +129,11 @@ export function VenueFilters({ onFilterChange }: VenueFiltersProps) {
             </div>
             <Slider
               defaultValue={[filters.minSize, filters.maxSize]}
-              max={500}
+              value={[filters.minSize, filters.maxSize]}
+              min={0}
+              max={10000} // Reasonable upper limit for UI
               step={10}
-              onValueChange={(value) => {
-                updateFilter("minSize", value[0]);
-                updateFilter("maxSize", value[1]);
-              }}
+              onValueChange={(value) => handleSliderChange("minSize", "maxSize", value)}
               className="w-full"
             />
           </div>
@@ -184,12 +184,11 @@ export function VenueFilters({ onFilterChange }: VenueFiltersProps) {
             </div>
             <Slider
               defaultValue={[filters.minPrice, filters.maxPrice]}
-              max={10000}
+              value={[filters.minPrice, filters.maxPrice]}
+              min={0}
+              max={1000000} // Increased upper limit for broader range
               step={100}
-              onValueChange={(value) => {
-                updateFilter("minPrice", value[0]);
-                updateFilter("maxPrice", value[1]);
-              }}
+              onValueChange={(value) => handleSliderChange("minPrice", "maxPrice", value)}
               className="w-full"
             />
           </div>
@@ -203,17 +202,20 @@ export function VenueFilters({ onFilterChange }: VenueFiltersProps) {
                 className="text-sm px-4 py-2.5 border border-input rounded-[8px] text-muted-foreground"
               >
                 <Star className="w-4 h-4" />
-                <span className="text-muted-foreground">{filters.minRating} - 5</span>
+                <span className="text-muted-foreground">
+                  {filters.minRating} - {filters.maxRating}
+                </span>
               </Button>
             </div>
             <Slider
               defaultValue={[filters.minRating, filters.maxRating]}
-              max={5}
+              value={[filters.minRating, filters.maxRating]}
+              min={0}
+              max={5} // Fixed rating scale
               step={0.1}
-              onValueChange={(value) => {
-                updateFilter("minRating", value[0]);
-                updateFilter("maxRating", value[1]);
-              }}
+              onValueChange={(value) =>
+                handleSliderChange("minRating", "maxRating", value)
+              }
               className="w-full"
             />
           </div>

@@ -4,7 +4,7 @@ import { BookingModalPopup } from "../venue/[venueId]/_components/BookingPopup/B
 const page = () => {
   return (
     <>
-      <BookingModalPopup />
+      <BookingModalPopup venueId={1}  />
     </>
   );
 };

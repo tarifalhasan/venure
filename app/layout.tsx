@@ -57,7 +57,7 @@ export default async function RootLayout({
         </ReactQueryProvider>
         {/* </SessionProvider> */}
 
-        <Toaster />
+        <Toaster   />
       </body>
     </html>
   );

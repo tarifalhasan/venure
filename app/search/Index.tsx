@@ -3,8 +3,7 @@
 import { Footer } from "@/components/common/footer";
 import { Navbar } from "@/components/common/navbar";
 import { Newsletter } from "@/components/common/news-letter";
-import { useVendorsQuery } from "@/queries/vendorsQueries";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { SearchHeader } from "./_components/search-header";
 import { SearchResultsHeader } from "./_components/search-results-header";
 import { VenueFilters } from "./_components/venue-filters";
@@ -13,173 +12,171 @@ import { VenueFilterInput, VenueFilterResponse } from "@/types/venue";
 import { useVenueFilterMutation } from "@/queries/mutations/venuesMutations";
 import { CommonPagination } from "@/components/common/common-pagination";
 import { useSearchParams } from "next/navigation";
+import VenueFilterCardSkeleton from "@/components/skeletons/venue-filter-card-skeleton";
+import { ErrorSection, NoVenuesFound } from "@/components/common/Error_NoVenues_Sections";
+import { addDays } from "date-fns";
 
 export default function SearchResults() {
-  const searchParams = useSearchParams(); // Get searchParams from Next.js
-  const searchText = searchParams.get("searchText") || ""; // Extract searchText from query params
-  const startDate = searchParams.get("startDate") || ""; // Extract startDate from query params
-  const endDate = searchParams.get("endDate") || ""; // Extract endDate from query params
-  const venueType = searchParams.get("venueType") || ""; // Extract venueType from query params
-  const currentPage = searchParams.get("currentPage") || "1"; // Extract currentPage from query params
-  const itemsPerPage = searchParams.get("itemsPerPage") || "10"; // Extract itemsPerPage from query params
+  const searchParams = useSearchParams();
+
+  // Extract search parameters with fallbacks
+  const searchText = searchParams.get("searchText") || "";
+
+  const startDate = searchParams.get("startDate") || new Date();
+  const endDate = searchParams.get("endDate") || addDays(new Date(), 1);
+  const venueType = searchParams.get("venueType") || "";
+  const currentPage = parseInt(searchParams.get("currentPage") || "1", 10);
+  const itemsPerPage = parseInt(searchParams.get("itemsPerPage") || "10", 10);
+
+  // State declarations
   const [isShowFilter, setShowFilter] = useState(false);
   const [filters, setFilters] = useState<VenueFilterInput>({
-    searchText: searchText, // Set initial searchText from query params
-    venueType: venueType,
+    searchText,
+    venueType,
     destination: searchText,
-    minAttendees: 50,
-    maxAttendees: 200,
-    minSize: 30,
-    maxSize: 150,
-    minPrice: 100,
-    maxPrice: 10000,
-    minRating: 2,
+    minAttendees: 0,
+    maxAttendees: 1000,
+    minSize: 0,
+    maxSize: 10000,
+    minPrice: 0,
+    maxPrice: 1000000,
+    minRating: 0,
     maxRating: 5,
     adjustableSpace: true,
     features: [],
-    startDate: startDate, // Set initial startDate from query params
-    endDate: endDate, // Set initial endDate from query params
-    currentPage:parseInt(currentPage, 10),
-    itemsPerPage: parseInt(itemsPerPage, 10),
+    startDate,
+    endDate,
+    currentPage,
+    itemsPerPage,
   });
   const [filteredVenues, setFilteredVenues] = useState<VenueFilterResponse | null>(null);
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
 
-  const { mutate, isPending: isFiltering } = useVenueFilterMutation({
+  // Mutation hook
+  const {
+    mutate,
+    isPending: isFiltering,
+    isError: isFilterError,
+  } = useVenueFilterMutation({
     onSuccess: (data) => {
       setFilteredVenues(data);
+      setHasLoadedOnce(true);
     },
     onError: (error) => {
       console.error("Error filtering venues:", error);
+      setFilteredVenues(null);
+      setHasLoadedOnce(true);
     },
   });
 
-  const { data: vendors, isLoading: isLoadingVendors } = useVendorsQuery();
+  // Memoized filter application
+  const applyFilters = useCallback(() => {
+    mutate(filters);
+  }, [filters, mutate]);
 
+  // Effect to apply filters when filters change
+  useEffect(() => {
+    applyFilters();
+  }, [applyFilters]); // Only depends on applyFilters, which includes filters
+
+  // Handler functions
   const handleFilterChange = (newFilters: VenueFilterInput) => {
-    setFilters(newFilters);
-    mutate(newFilters);
+    setFilters(newFilters); // Only update state; effect will handle API call
   };
 
   const handlePageChange = (page: number) => {
-    const updatedFilters = { ...filters, currentPage: page };
-    setFilters(updatedFilters);
-    mutate(updatedFilters);
+    setFilters((prev) => ({ ...prev, currentPage: page })); // Update state only
   };
 
-  // Default venue definition
-  const defaultVenue = {
-    name: "Grand Ballroom",
-    location: "Shangri-La, Bangkok",
-    type: "Hotel",
-    capacity: "120-1000",
-    rating: 4.3,
-    reviews: 2228,
-    price: 140000,
-    discountPrice: 120000,
-    discountPercent: 15,
-    images: [
-      {
-        src: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        alt: "image",
-      },
-      {
-        src: "https://images.pexels.com/photos/186077/pexels-photo-186077.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        alt: "image",
-      },
-      {
-        src: "https://images.pexels.com/photos/5110056/pexels-photo-5110056.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        alt: "image",
-      },
-    ],
-  };
+  const handleSortChange = useCallback((value: string) => {
+    setFilters((prev) => ({ ...prev, sort: value }));
+  }, []);
 
-  // Repeat the default venue 5 times with unique keys
-  const defaultVenues = Array.from({ length: 4 }, (_, index) => ({
-    ...defaultVenue,
-    key: index + 1,
-  }));
+  const handleTabChange = useCallback((value: string) => {
+    setFilters((prev) => ({ ...prev, tab: value }));
+  }, []);
+
+  // Render venue cards or skeletons
+  const renderVenues = () => {
+    if (isFiltering || !hasLoadedOnce) {
+      return Array.from({ length: filters.itemsPerPage }, (_, index) => (
+        <VenueFilterCardSkeleton key={index} />
+      ));
+    }
+
+    if (isFilterError) {
+      return <ErrorSection title="Venues" />;
+    }
+
+    if (!filteredVenues?.venues?.length && hasLoadedOnce) {
+      return <NoVenuesFound title="Venues" />;
+    }
+
+    return filteredVenues?.venues?.map((venue) => (
+      <VenueCard
+        key={venue.venueid}
+        name={venue.venuename}
+        location={venue.venueaddress}
+        type={venue.venuetype}
+        capacity={`${venue.venueminattendees}-${venue.venuemaxattendees}`}
+        rating={venue.venuerating}
+        reviews={venue.venuereviews || 0}
+        price={venue.venueprice}
+        discountPrice={
+          venue.venuediscount
+            ? venue.venueprice * (1 - venue.venuediscount / 100)
+            : venue.venueprice
+        }
+        discountPercent={venue.venuediscount || 0}
+        images={[
+          {
+            src:
+              venue.venueCoverImages?.find(
+                (img) => img?.isCoverImage || (img as any)?.isComverImage
+              )?.imagePath || "/default-card-placeholder.png",
+            alt: "cover image",
+          },
+          ...(venue.venueCoverImages?.map((img) => ({
+            src: img.imagePath,
+            alt: "venue image",
+          })) || []),
+        ]}
+      />
+    ));
+  };
 
   return (
     <>
       <Navbar navbarClasses="" searchComponentWrapperClasses="w-full max-w-[90%]" />
       <div className="container mx-auto pt-20 flex flex-col gap-y-6 lg:gap-y-10">
         <SearchHeader
-          resultCount={filteredVenues?.totalItems || defaultVenues.length}
-          searchTerm="Venue"
+          resultCount={filteredVenues?.totalItems || filteredVenues?.venues?.length || 0}
+          searchTerm={searchText || "Venues"}
         />
         <div className="flex flex-col lg:flex-row items-start gap-8">
-          {/* Filters (Desktop) */}
           <div className="w-full hidden md:block lg:w-[280px] xl:w-[400px]">
             <VenueFilters onFilterChange={handleFilterChange} />
           </div>
 
-          {/* Results */}
           <div className="flex-1 w-full flex flex-col gap-y-8">
             <SearchResultsHeader
-              onSortChange={(value) => console.log("Sort:", value)}
-              onTabChange={(value) => console.log("Tab:", value)}
+              onSortChange={handleSortChange}
+              onTabChange={handleTabChange}
               setShowFilterMobile={setShowFilter}
               isShowFilter={isShowFilter}
             />
 
-            {/* Filters (Mobile) */}
             {isShowFilter && <VenueFilters onFilterChange={handleFilterChange} />}
 
-            {/* Venue Results */}
-            <div className="grid w-full flex-1 gap-6">
-              {isFiltering || isLoadingVendors ? (
-                <p className="text-center text-gray-600">Loading venues...</p>
-              ) : filteredVenues && filteredVenues.venues.length > 0 ? (
-                filteredVenues.venues.map((venue) => (
-                  <VenueCard
-                    key={venue.venueid}
-                    name={venue.venuename}
-                    location={venue.venueaddress}
-                    type={venue.venuetype}
-                    capacity={`${venue.venueminsizeinsquaremeters}-${venue.venuemaxsizeinsquaremeters}`}
-                    rating={venue.venuerating}
-                    reviews={2228} // Placeholder; replace with real data
-                    price={venue.venueprice}
-                    discountPrice={
-                      venue.venuediscount
-                        ? venue.venueprice * (1 - venue.venuediscount / 100)
-                        : venue.venueprice
-                    }
-                    discountPercent={venue.venuediscount || 0}
-                    images={[
-                      { src: venue.venueCoverImage || "", alt: "cover image" },
-                      ...venue.venueImages.map((url) => ({
-                        src: url,
-                        alt: "venue image",
-                      })),
-                    ]}
-                  />
-                ))
-              ) : (
-                defaultVenues.map((venue) => (
-                  <VenueCard
-                    key={venue.key}
-                    name={venue.name}
-                    location={venue.location}
-                    type={venue.type}
-                    capacity={venue.capacity}
-                    rating={venue.rating}
-                    reviews={venue.reviews}
-                    price={venue.price}
-                    discountPrice={venue.discountPrice}
-                    discountPercent={venue.discountPercent}
-                    images={venue.images}
-                  />
-                ))
-              )}
-              {filteredVenues && filteredVenues.totalPages > 1 && (
-                <CommonPagination
-                  currentPage={filteredVenues.currentPage}
-                  totalPages={filteredVenues.totalPages}
-                  onPageChange={handlePageChange}
-                />
-              )}
-            </div>
+            <div className="grid w-full flex-1 gap-6">{renderVenues()}</div>
+
+            {filteredVenues && filteredVenues?.totalPages > 1 && (
+              <CommonPagination
+                currentPage={filteredVenues.currentPage}
+                totalPages={filteredVenues.totalPages}
+                onPageChange={handlePageChange}
+              />
+            )}
           </div>
         </div>
         <Newsletter />

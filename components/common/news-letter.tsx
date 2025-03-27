@@ -1,5 +1,5 @@
 "use client";
-"use client";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
@@ -14,9 +14,8 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
-import { Check } from "lucide-react";
+import { CheckCircle2, Mail } from "lucide-react";
 
-// Define the Zod schema for form validation
 const schema = z.object({
   email: z.string().email("Please enter a valid email address"),
 });
@@ -29,66 +28,76 @@ export function Newsletter() {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
-    mode:"all"
+    mode: "all",
   });
 
-  // Form submit handler
   const onSubmit = (data: FormData) => {
-    // Close the form and open the dialog on success
+    // Here you would typically make an API call to subscribe
+    console.log("Subscribing:", data.email);
     setIsDialogOpen(true);
+    reset(); // Clear the form after successful submission
   };
 
   return (
     <section className="py-16 px-4 bg-gray-50">
-      <div className="max-w-2xl mx-auto text-center space-y-4">
-        <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
-          Receive the latest update on
-          <br />
-          the best offers!
+      <div className="max-w-3xl mx-auto text-center space-y-6">
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">
+          Stay Informed About Exclusive Venue Offers
         </h2>
-        <p className="text-gray-600">
-          Join our newsletter, and receive the latest news on
-          <br />
-          the best deals on Evenure
+        <p className="text-gray-600 text-lg">
+          Subscribe to our newsletter and receive curated updates on premium venues,
+          special promotions, and event planning insights directly to your inbox.
         </p>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="w-full flex flex-col justify-center  sm:flex-row gap-3 max-w-md mx-auto"
+          className="w-full flex flex-col sm:flex-row gap-3 max-w-lg mx-auto items-start"
         >
-          <div className="flex flex-col ">
-            <Input
-              type="email"
-              placeholder="Your email address"
-              className="flex-1 rounded-sm"
-              {...register("email")}
-            />
+          <div className="w-full sm:flex-1 space-y-2">
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <Input
+                type="email"
+                placeholder="Enter your email address"
+                className="pl-10 w-full rounded-md border-gray-300 "
+                {...register("email")}
+              />
+            </div>
             {errors.email && (
-              <span className="text-red-500 text-sm">{errors.email.message}</span>
+              <span className="text-red-500 text-sm block text-left">
+                {errors.email.message}
+              </span>
             )}
           </div>
-
-          <Button type="submit" className="rounded-sm">
-            Submit
+          <Button type="submit" className="rounded-md">
+            Subscribe
           </Button>
         </form>
       </div>
 
-      {/* ShadCN Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
-          <DialogTitle>Success!</DialogTitle>
-          <DialogDescription>
-            <Check className="mx-auto h-16 w-16 text-green-600" />
-            <p className="text-center">
-              You have successfully subscribed with your email address.
-            </p>
+        <DialogContent className="sm:max-w-md">
+          <DialogTitle className="text-xl font-semibold text-gray-900">
+            Subscription Confirmed
+          </DialogTitle>
+          <DialogDescription className="space-y-4">
+            <div className="flex justify-center">
+              <CheckCircle2 className="h-12 w-12 text-green-600" />
+            </div>
+            <div className="text-center space-y-2">
+              <p className="text-gray-700 font-medium">Thank You for Subscribing!</p>
+              <p className="text-gray-500">
+                You’ve successfully joined our newsletter. Expect the latest venue deals
+                and event planning tips delivered straight to your inbox.
+              </p>
+            </div>
           </DialogDescription>
-          <DialogFooter>
-            <DialogClose>
-              <Button onClick={() => setIsDialogOpen(false)} className="mt-4 w-full">
-                Close
+          <DialogFooter className="sm:justify-center">
+            <DialogClose asChild>
+              <Button onClick={() => setIsDialogOpen(false)} className="rounded-md">
+                Continue Browsing
               </Button>
             </DialogClose>
           </DialogFooter>

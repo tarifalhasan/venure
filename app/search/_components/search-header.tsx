@@ -31,8 +31,8 @@ export function SearchHeader({ resultCount, searchTerm }: SearchHeaderProps) {
         </Breadcrumb>
       </div>
 
-      <h3 className="text-xs md:text-sm font-light text-[#343A3F]">
-        {resultCount} Results for {searchTerm} found
+      <h3 className="text-xs md:text-sm  text-[#343A3F] font-bold">
+        ({resultCount}) <span className="font-semibold">Results for '{searchTerm}' found</span>
       </h3>
     </div>
   );

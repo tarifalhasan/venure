@@ -111,7 +111,7 @@ export function ImageCarousel({
 
       // Use window.Image constructor explicitly to avoid TypeScript errors
       const img = new window.Image();
-      img.src = images[index].src;
+      img.src = images[index].src || "/default-card-placeholder.png";
       img.crossOrigin = "anonymous";
       img.onload = () => {
         setPreloadedImages((prev) => {
@@ -234,7 +234,7 @@ export function ImageCarousel({
                 // style={{ aspectRatio }}
               >
                 <Image
-                  src={image.src || "/placeholder.svg?height=600&width=800"}
+                  src={image.src || "/default-card-placeholder.png?height=600&width=800"}
                   alt={image.alt || "Carousel image"}
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

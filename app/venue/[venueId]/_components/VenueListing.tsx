@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { MapPin, X } from "lucide-react";
 
@@ -129,9 +130,9 @@ export default function VenueListing() {
 
       {/* CTA Section */}
       <Card className="bg-white rounded-lg p-4 shadow-sm">
-        <button className="w-full bg-gray-800 text-white py-3 rounded-md mb-4">
+      <Button size={"lg"} className="w-full  mb-3 py-6 rounded-md">
           Plan a Free Site Visit
-        </button>
+        </Button>
 
         <div className="mb-4">
           <div className="text-xs text-gray-500">Starting at</div>

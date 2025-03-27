@@ -8,8 +8,8 @@ namespace EvenureBackendAgain.Models
         public int venueid { get; set; }
         public int featureid { get; set; }
 
-        public DateTime createdate { get; set; }
-        public DateTime? deletedate { get; set; }
+        public DateTime createddate { get; set; }
+        public DateTime? updateddate { get; set; }
 
         public venue venue { get; set; }
         public venuefeature venuefeature { get; set; }

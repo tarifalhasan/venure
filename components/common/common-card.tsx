@@ -15,7 +15,7 @@ export function CommonCard({ id, title, subtitle, imageUrl }: CommonCardProps) {
       <Link href={`/venue/${id}`} className="flex flex-col h-full">
         <div className="aspect-video relative">
           <Image
-            src={imageUrl || "/placeholder.svg"}
+            src={imageUrl || "/default-card-placeholder.png"}
             alt={title || "Eventure"}
             fill
             className="object-cover"

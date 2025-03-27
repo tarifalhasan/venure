@@ -119,7 +119,7 @@ export const Sidebar = () => {
               </ul>
             </div>
 
-            <BookingModalPopup />
+            <BookingModalPopup venueId={1} />
             <Button variant="outline" className="w-full">
               LEARN MORE
             </Button>

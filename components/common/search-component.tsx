@@ -15,27 +15,56 @@ import {
 import { Search } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Separator } from "../ui/separator";
-import { format, parseISO } from "date-fns"; // For formatting and parsing dates
+import { addDays, format, parseISO } from "date-fns";
 
 export function SearchComponent() {
   const router = useRouter();
-  const searchParams = useSearchParams(); // Get query params from URL
+  const searchParams = useSearchParams();
 
   // Extract initial values from searchParams
   const initialSearchText = searchParams.get("searchText") || "";
   const initialStartDate = searchParams.get("startDate")
-    ? parseISO(searchParams.get("startDate")!) // Parse ISO string to Date
+    ? parseISO(searchParams.get("startDate")!)
     : undefined;
   const initialEndDate = searchParams.get("endDate")
-    ? parseISO(searchParams.get("endDate")!) // Parse ISO string to Date
+    ? parseISO(searchParams.get("endDate")!)
     : undefined;
   const initialEventType = searchParams.get("venueType") || "";
 
-  // Initialize state with values from searchParams
+  // Default to current date and next day
+  const today = new Date();
+  const tomorrow = addDays(today, 1);
+
+  // Initialize state with values from searchParams or defaults
   const [searchText, setSearchText] = useState<string>(initialSearchText);
-  const [startDate, setStartDate] = useState<Date | undefined>(initialStartDate);
-  const [endDate, setEndDate] = useState<Date | undefined>(initialEndDate);
+  const [startDate, setStartDate] = useState<Date | undefined>(
+    () => initialStartDate || today
+  );
+  const [endDate, setEndDate] = useState<Date | undefined>(
+    () => initialEndDate || tomorrow
+  );
   const [eventType, setEventType] = useState<string>(initialEventType);
+
+  // Sync state with searchParams on change
+  useEffect(() => {
+    const currentSearchText = searchParams.get("searchText") || "";
+    const currentStartDate = searchParams.get("startDate")
+      ? parseISO(searchParams.get("startDate")!)
+      : undefined;
+    const currentEndDate = searchParams.get("endDate")
+      ? parseISO(searchParams.get("endDate")!)
+      : undefined;
+    const currentEventType = searchParams.get("venueType") || "";
+
+    setSearchText(currentSearchText);
+    setEventType(currentEventType);
+
+    // Update dates if in searchParams; otherwise, set default
+    setStartDate(currentStartDate || today);
+    setEndDate(
+      currentEndDate || (currentStartDate ? addDays(currentStartDate, 1) : tomorrow)
+    );
+  }, [searchParams]);
 
   // Handle search submission
   const handleSearch = () => {
@@ -91,14 +120,15 @@ export function SearchComponent() {
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
-                  className={`w-full justify-start text-left font-normal ${
-                    !startDate && !endDate ? "text-muted-foreground" : ""
-                  }`}
+                  className="w-full justify-start text-left font-normal"
                 >
                   {startDate && endDate
-                    ? `${startDate.toDateString()} - ${endDate.toDateString()}`
+                    ? `${format(startDate, "LLL dd, y")} - ${format(
+                        endDate,
+                        "LLL dd, y"
+                      )}`
                     : startDate
-                    ? `${startDate.toDateString()} - To`
+                    ? `${format(startDate, "LLL dd, y")} - To`
                     : "From and To"}
                 </Button>
               </PopoverTrigger>
@@ -112,7 +142,9 @@ export function SearchComponent() {
                     setStartDate(range?.from);
                     setEndDate(range?.to);
                   }}
+                  defaultMonth={startDate || today}
                   initialFocus
+                  disabled={(date) => date < today} // Disable past dates
                 />
               </PopoverContent>
             </Popover>

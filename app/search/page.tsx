@@ -18,10 +18,10 @@ export default async function Page({ searchParams }: PageParams) {
   const itemsPerPage = (await searchParams).itemsPerPage;
 
   // Prefetch vendor data on the server
-  await queryClient.prefetchQuery({
-    queryKey: ["vendors", currentPage, itemsPerPage], // Query key includes pagination params
-    queryFn: async () => await VendorService.getVendors(currentPage, itemsPerPage), // Fetch first page of vendors
-  });
+  // await queryClient.prefetchQuery({
+  //   queryKey: ["vendors", currentPage, itemsPerPage], // Query key includes pagination params
+  //   queryFn: async () => await VendorService.getVendors(currentPage, itemsPerPage), // Fetch first page of vendors
+  // });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

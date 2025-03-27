@@ -6,6 +6,7 @@
         public string featurename { get; set; }
         public DateTime createddate { get; set; }
         public DateTime updateddate { get; set; }
+        public ICollection<venuefeaturemapping> VenueFeatureMappings { get; set; } = new List<venuefeaturemapping>();
 
     }
 }

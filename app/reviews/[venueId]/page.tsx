@@ -1,10 +1,9 @@
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
-import VenueDetailsComponent from "./Index";
+import VenueDetailsComponent from "./Index"; // Ensure this points to the correct file
 import { VenueService } from "@/services/venueService";
 import { ErrorSection } from "@/components/common/Error_NoVenues_Sections";
 import type { Metadata } from "next";
 import { ReviewService } from "@/services/reviewService";
-import { VendorService } from "@/services/vendorService";
 
 interface PageProps {
   params: Promise<{ venueId: string }>;
@@ -56,7 +55,7 @@ export default async function Page({ params, searchParams }: PageProps) {
   const queryClient = new QueryClient();
   const venueId = (await params).venueId;
 
-  // Parse search params with defaults
+  // Parse search params with defaults for pagination
   const searchParamsData = await searchParams;
   const currentPage = parseInt(searchParamsData.currentPage || "1", 10) || 1;
   const itemsPerPage = parseInt(searchParamsData.itemsPerPage || "10", 10) || 10;
@@ -66,23 +65,11 @@ export default async function Page({ params, searchParams }: PageProps) {
   }
 
   try {
-    // Prefetch venue details data on the server
-    await queryClient.prefetchQuery({
-      queryKey: ["venueDetails", venueId],
-      queryFn: () => VenueService.getVenueDetails(venueId),
-    });
-
     // Prefetch reviews data on the server with pagination
     await queryClient.prefetchQuery({
       queryKey: ["reviews", venueId, currentPage, itemsPerPage],
       queryFn: () =>
         ReviewService.getReviewsByVenueId(venueId, currentPage, itemsPerPage),
-    });
-
-    // Prefetch vendor data on the server
-    await queryClient.prefetchQuery({
-      queryKey: ["vendors", currentPage, itemsPerPage], // Query key includes pagination params
-      queryFn: async () => await VendorService.getVendors(currentPage, itemsPerPage), // Fetch first page of vendors
     });
 
     return (

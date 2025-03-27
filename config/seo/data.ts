@@ -1,103 +1,129 @@
 import { Metadata, type Viewport } from "next";
-/**
- * @site_name Venure
- * Book your Venue
- * Search for venues to host your latest events
- */
+
+const appName = process.env.NEXT_PUBLIC_APP_NAME || "Venure";
+const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://venure.vercel.app";
+
 export const defaultSEOdata: Metadata = {
-  title: "Venure - Book the Perfect Venue for Your Events",
-  description:
-    "Venure is your go-to platform to search and book the ideal venues for weddings, parties, conferences, and more. Simplify your event planning process today!",
+  // Dynamic title with fallback
+  title: {
+    default: `${appName} - Book the Perfect Venue for Your Events`,
+    template: `%s | ${appName}`,
+  },
+
+  // Professional description with dynamic app name
+  description: `${appName} is your premier platform for discovering and booking exceptional venues for weddings, conferences, parties, and more. Streamline your event planning with our curated selection of venues.`,
+
+  // Comprehensive keywords optimized for SEO
   keywords: [
-    "venue booking",
+    `${appName.toLowerCase()} booking`,
     "event venues",
     "wedding venues",
-    "conference halls",
-    "book venues online",
-    "Venure platform",
+    "conference venues",
     "party venues",
-    "venue search",
-    "event planning",
-    "find venues",
-    "online venue booking",
-    "venue management",
-    "venue for rent",
-    "best venues",
-    "awebcode",
+    "venue reservation",
+    "event planning platform",
+    "book venues online",
+    "venue finder",
+    "venue rental service",
+    "event space booking",
+    "professional venue management",
   ],
+
+  // OpenGraph configuration with dynamic values
   openGraph: {
-    title: "Venure - Your Perfect Venue Awaits",
-    description:
-      "Find and book the perfect venue for your next event. Explore a wide range of venues tailored to your needs and preferences on Venure.",
-    url: "https://venure-app.vercel.app", // Replace with the actual Venure URL
-    siteName: "Venure",
-    locale: "en",
+    title: `${appName} - Discover Your Perfect Venue`,
+    description: `Plan your next event with ${appName}. Browse and book from a diverse selection of venues tailored to your unique requirements.`,
+    url: appUrl,
+    siteName: appName,
+    locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: `${appUrl}/og-image.png`,
+        width: 1200,
+        height: 630,
+        alt: `${appName} - Venue Booking Platform`,
+      },
+    ],
   },
+
+  // Twitter card configuration
   twitter: {
-    title: "Venure - Book the Perfect Venue",
-    description:
-      "Explore and book the ideal venues for your events on Venure. Streamline your event planning and find venues effortlessly.",
+    title: `${appName} - Book Your Ideal Venue`,
+    description: `Find and secure the perfect venue for any occasion with ${appName}. Simplify your event planning today.`,
     card: "summary_large_image",
-    site: "@venureapp", // Replace with actual Twitter handle
-    creator: "@venureapp", // Replace with actual Twitter handle
+    site: "@venureapp", // Keep this static unless you have a dynamic Twitter handle
+    creator: "@venureapp",
   },
+
+  // Apple Web App configuration
   appleWebApp: {
-    title: "Venure - Book Venues for Events",
+    title: `${appName} - Venue Booking`,
     capable: true,
     statusBarStyle: "default",
   },
+
+  // Facebook configuration
   facebook: {
-    appId: "123456789", // Replace with the actual Facebook App ID
+    appId: process.env.NEXT_PUBLIC_FACEBOOK_APP_ID || "123456789",
   },
+
+  // Robots configuration
   robots: {
     index: true,
     follow: true,
-    googleBot: "all",
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
-  icons: [
-    {
-      rel: "icon",
-      url: "/apple-touch-icon.png",
-    },
-    {
-      url: "https://venure-app.vercel.app/og-image.png", // Replace with actual Venure icon URL
-      type: "image/png",
-      sizes: "512x512",
-    },
-    {
-      url: "https://venure-app.vercel.app/favicon.ico", // Replace with actual favicon URL
-      type: "image/x-icon",
-      sizes: "16x16",
-    },
-  ],
-  applicationName: "Venure",
-  authors: [
-    { name: "Venure Team", url: "https://venure-app.vercel.app" }, // Replace with actual team URL
-  ],
+
+  // Dynamic icons configuration
+  icons: {
+    icon: [
+      { url: `${appUrl}/favicon.ico`, type: "image/x-icon" },
+      { url: `${appUrl}/apple-touch-icon.png`, type: "image/png" },
+    ],
+    shortcut: `${appUrl}/favicon.ico`,
+    apple: `${appUrl}/apple-touch-icon.png`,
+  },
+
+  // Additional metadata
+  applicationName: appName,
+  authors: [{ name: `${appName} Team`, url: appUrl }],
+  creator: appName,
+  publisher: appName,
+  category: "Venue Booking & Event Planning",
+
+  // Verification codes (should come from environment variables)
   verification: {
-    google: "google-site-verification=1234567890", // Replace with actual verification code
-    yandex: "yandex-verification=1234567890", // Replace with actual verification code
-    yahoo: "y_key=1234567890", // Replace with actual verification code
+    google: process.env.GOOGLE_VERIFICATION_CODE || "google-site-verification=1234567890",
+    yandex: process.env.YANDEX_VERIFICATION_CODE || "yandex-verification=1234567890",
   },
-  manifest: "https://venure-app.vercel.app/manifest.webmanifest", // Replace with actual manifest URL
+
+  // Dynamic manifest
+  manifest: `${appUrl}/manifest.webmanifest`,
+
+  // App links
   appLinks: {
-    web: [{ url: "https://venure-app.vercel.app", should_fallback: true }],
+    web: [{ url: appUrl, should_fallback: true }],
   },
-  creator: "Venure",
-  category: "venue booking, event planning",
 };
 
-// Default viewport data
+// Optimized viewport configuration
 export const defaultViewPort: Viewport = {
   width: "device-width",
-  height: "device-height",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
-  viewportFit: "cover",
-  colorScheme: "light",
-  themeColor: "#FFFFFF", // White for event planning theme
+  maximumScale: 5, // Allow some zooming for accessibility
   minimumScale: 1,
-  interactiveWidget: "resizes-content",
+  userScalable: true, // Better accessibility
+  viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#FFFFFF" },
+    { media: "(prefers-color-scheme: dark)", color: "#1A1A1A" },
+  ],
+  colorScheme: "light dark", // Support both themes
 };

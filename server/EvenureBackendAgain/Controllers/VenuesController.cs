@@ -147,7 +147,7 @@ namespace EvenureBackendAgain.Controllers
                     {
                         v.venueid,
                         v.venuename,
-                        //v.siteid,
+                        v.siteid,
                         v.venueaddress,
                         v.venueaward,
                         v.venueprice,
@@ -160,20 +160,18 @@ namespace EvenureBackendAgain.Controllers
                         v.venueaccount,
                         v.venuerating,
                         v.venuedescription,
-                        v.venueimages3bucket,
-                        v.venuereview,
                         v.venuepackagepdfs3bucket,
                         v.venuefloorplans3bucket,
                         v.venueheight,
                         v.venuetotalarea,
                         v.ispreferred,
-                        noOfReviews = v.Reviews.Count(),
+                        venuereviews = v.Reviews.Count(),
                         siteName = v.site.sitename,
                         siteCity = v.site.sitecity,
                         siteCountry = v.site.sitecountry,
                         venueCoverImages = v.VenueImages.Select(x=> new { 
                             imageId = x.venueimageid,
-                            isComverImage = x.iscoverimage,
+                            isCoverImage = x.iscoverimage,
                             imagePath = x.venueimagepath
                         })
                     })
@@ -310,16 +308,15 @@ namespace EvenureBackendAgain.Controllers
         [HttpGet("get-venue-details/{venueId}")]
         public async Task<IActionResult> GetVenueDetails(int venueId)
         {
-            //string s3BucketName = "venue-media-bucket";
-            //string s3FolderPath = $"venue-images/other-images/{venueId}/";
-            //var images = await GetVenueImagesFromS3(venueId);
-            // Fetch venue details and generate the image URLs from S3
-            var venueDetails = await _context.venue
+            try
+            {
+                var venueDetails = await _context.venue
                 .Include(x => x.site)
-                    .ThenInclude(x=> x.vendors)
+                    .ThenInclude(x=> x.VendorSiteMappings)
+                        .ThenInclude(x=> x.vendor)
                 .Include(x => x.VenueImages)
-                .Include(x=> x.VenueFeatureMappings)
-                    .ThenInclude(x=> x.venuefeature)
+                .Include(x => x.VenueFeatureMappings)
+                    .ThenInclude(x => x.venuefeature)
                 .Where(v => v.venueid == venueId)
                 .Select(v => new
                 {
@@ -339,26 +336,34 @@ namespace EvenureBackendAgain.Controllers
                     v.venuetype,
                     v.venuerating,
                     venueCoverImage = v.VenueImages.FirstOrDefault(x => x.iscoverimage).venueimagepath,
-                    venueImages = v.VenueImages.Where(x=> !x.iscoverimage),
+                    venueImages = v.VenueImages.Where(x => !x.iscoverimage),
                     venueFeatures = _context.venuefeature
                         .Where(f => _context.venuefeaturemapping
                                     .Any(vf => vf.venueid == venueId && vf.featureid == f.featureid))
                         .Select(f => f.featurename)
                         .ToList(),
-                    venueAmenities = new List<string> { "Wi-Fi", "Parking", "Catering" }, 
-                    siteVendors = v.site.vendors.Select(v=> new 
+                    venueAmenities = new List<string> { "Wi-Fi", "Parking", "Catering" },
+                    siteVendors = v.site
+                    .VendorSiteMappings.Select(x => new
                     {
-                        v.vendortype,
-                        v.vendorname
-                    }).ToList()
+                        x.vendor.vendorid,
+                        x.vendor.vendortype,
+                        x.vendor.vendorname,
+                    })
                 }).FirstOrDefaultAsync();
 
-            if (venueDetails == null)
-            {
-                return NotFound(new { Message = "Venue not found" });
-            }
+                if (venueDetails == null)
+                {
+                    return NotFound(new { Message = "Venue not found" });
+                }
 
-            return Ok(venueDetails);
+                return Ok(venueDetails);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
 
         private async Task<List<string>> GetVenueImagesFromS3(int venueId)
