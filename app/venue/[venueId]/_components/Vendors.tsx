@@ -1,15 +1,16 @@
 "use client";
 
+import {
+  ErrorSection,
+  NoVenuesFound,
+} from "@/components/common/Error_NoVenues_Sections"; // Verify this path and export
+import { VendorSkeleton } from "@/components/skeletons/vendor-skeleton"; // Verify this path and export
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { RefreshCcw } from "lucide-react";
-import { VendorCard, type VendorTypeEnum } from "./VendorCard"; // Verify this path and export
-import { useRouter } from "next/navigation";
-import { ErrorSection, NoVenuesFound } from "@/components/common/Error_NoVenues_Sections"; // Verify this path and export
-import { VendorSkeleton } from "@/components/skeletons/vendor-skeleton"; // Verify this path and export
 import type { VendorResponse } from "@/types/venue";
-
-
+import { RefreshCcw } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { VendorCard, type VendorTypeEnum } from "./VendorCard"; // Verify this path and export
 
 const Vendors = ({
   vendorsResponse: { vendors, currentPage, totalPages, totalItems } = {
@@ -56,9 +57,11 @@ const Vendors = ({
           </Button>
         </div>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 2xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
         {isLoading ? (
-          Array.from({ length: 10 }).map((_, index) => <VendorSkeleton key={index} />)
+          Array.from({ length: 10 }).map((_, index) => (
+            <VendorSkeleton key={index} />
+          ))
         ) : error ? (
           <div className="col-span-full">
             <ErrorSection title="Vendors" refetch={vendorRefresh} />{" "}
