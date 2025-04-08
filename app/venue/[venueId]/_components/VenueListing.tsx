@@ -1,8 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import type { VenueDetails } from "@/types/venue";
 import { MapPin, X } from "lucide-react";
+import Link from "next/link";
 
-export default function VenueListing() {
+export default function VenueListing({VenueDetails}:{VenueDetails?:VenueDetails}) {
+  const totalArea = `${
+    VenueDetails?.venueminsizeinsquaremeters - VenueDetails?.venuemaxsizeinsquaremeters
+  }`;
   return (
     <div className="space-y-6">
       {/* Nearby Section */}
@@ -11,9 +16,9 @@ export default function VenueListing() {
           <h3 className="text-lg text-skin-black 2xl:text-xl font-semibold mb-4">
             Nearby:
           </h3>
-          <button className="text-gray-900 flex items-center text-sm">
+          <Link href="/maps" className="text-gray-900 flex items-center text-sm underline">
             Maps <span className="ml-1">›</span>
-          </button>
+          </Link>
         </div>
 
         <div className="space-y-2">
@@ -21,15 +26,15 @@ export default function VenueListing() {
             <div className="bg-gray-100 p-1 rounded">
               <MapPin className="h-4 w-4" />
             </div>
-            <span className="text-sm">BTS Station: Ekkamai (100m)</span>
+            <span className="text-sm">{VenueDetails?.venueaddress}</span>
           </div>
 
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <div className="bg-gray-100 p-1 rounded">
               <MapPin className="h-4 w-4" />
             </div>
             <span className="text-sm">MRT Station: Asok (800m)</span>
-          </div>
+          </div> */}
         </div>
       </Card>
 
@@ -66,7 +71,7 @@ export default function VenueListing() {
                   fill="black"
                 />
               </svg>
-              <label className="text-sm text-[#9A9FA3]">Total Area:</label>
+              <label className="text-sm text-[#9A9FA3]">Total Area: {totalArea}</label>
             </div>
             <div className="flex items-center gap-1">
               <svg
@@ -87,7 +92,7 @@ export default function VenueListing() {
                 <line x1="3.5" y1={14} x2="3.5" y2={1} stroke="black" />
               </svg>
 
-              <label className="text-sm text-[#9A9FA3]">Ceiling Height:</label>
+              <label className="text-sm text-[#9A9FA3]">Ceiling Height: {VenueDetails?.venueheight}</label>
             </div>
             <div className="flex items-center gap-1">
               <div className="inline-flex items-center gap-2">
@@ -95,7 +100,7 @@ export default function VenueListing() {
                 <img src="/people.svg" className="w-6" alt="people.svg" />
                 <img src="/people.svg" className="w-6" alt="people.svg" />
               </div>
-              <label className="text-sm text-[#9A9FA3]">500</label>
+              <label className="text-sm text-[#9A9FA3]">Capacity: 100</label>
             </div>
           </div>
           <div className="flex items-center gap-1">
@@ -123,7 +128,7 @@ export default function VenueListing() {
                 fill="black"
               />
             </svg>
-            <label className="text-sm text-[#9A9FA3]">Total Rooms:</label>
+            <label className="text-sm text-[#9A9FA3]">Total Rooms:35</label>
           </div>
         </div>
       </Card>
@@ -136,7 +141,7 @@ export default function VenueListing() {
 
         <div className="mb-4">
           <div className="text-xs text-gray-500">Starting at</div>
-          <div className="text-green-500 text-2xl font-semibold">120,000</div>
+          <div className="text-green-500 text-2xl font-semibold">{VenueDetails?.venueprice}</div>
         </div>
 
         <div className="space-y-3">

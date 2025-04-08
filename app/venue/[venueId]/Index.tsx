@@ -65,7 +65,12 @@ function VenueDetails({
         <div className="mt-10">
           <VenueImageSlider
             data={{
-              images: details?.venueImages || [],
+              images: [
+                ...(details?.venueCoverImage
+                  ? [details.venueCoverImage, ...details?.venueImages]
+                  : []),
+                ...(details?.venueImages || []),
+              ],
               venuename: details?.venuename,
               venueaddress: details?.venueaddress,
               venuerating: details?.venuerating,
@@ -106,14 +111,14 @@ function VenueDetails({
                         {tag}
                       </span>
                     ))}
-                    <span className="px-3 py-1 bg-[#C1C7CD] rounded-full text-sm inline-flex items-center justify-center h-8">
+                    {/* <span className="px-3 py-1 bg-[#C1C7CD] rounded-full text-sm inline-flex items-center justify-center h-8">
                       +2 more
-                    </span>
+                    </span> */}
                   </div>
                 </div>
               </CardContent>
             </Card>
-            <HotelFeatures />
+            <HotelFeatures venueFeatures={details?.venueFeatures}/>
             <SpaceSelector />
             {/* Packages & Food & Beverages */}
             <Packages />
@@ -129,9 +134,13 @@ function VenueDetails({
           {/* Sidebar */}
           <div className="lg:col-span-1">
             {/* <Sidebar /> */}
-            <VenueListing />
+            <VenueListing  VenueDetails={details} />
             <div className="pb-4" />
-            <BookingModalPopup venueId={venueId as any} />
+            <BookingModalPopup
+              venueId={venueId as any}
+              venueDetails={details}
+              vendors={vendorsData?.vendors}
+            />
           </div>
         </div>
       </div>

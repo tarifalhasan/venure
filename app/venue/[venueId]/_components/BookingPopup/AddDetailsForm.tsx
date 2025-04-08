@@ -12,26 +12,30 @@ import { useFormContext } from "react-hook-form";
 import PhoneInput from "react-phone-input-2";
 import { VenueDetails } from "./VenueDetails";
 
-const AddDetailsForm = () => {
+import type { Vendor,VenueDetails as TypeVenueDetails } from "@/types/venue";
+interface BookingModalPopupProps {
+  venueDetails?: TypeVenueDetails;
+  vendors?:Vendor[];
+}
+const AddDetailsForm = ({venueDetails,vendors}:BookingModalPopupProps) => {
   const { control, watch } = useFormContext();
   const selectedDate = watch("date");
   const selectedTime = watch("time");
 
-  const mockVenueDetails = {
-    name: "GRAND BALLROOM @SHERATON",
-    location: "Bangkok, Thailand",
-    image: "",
-    selectedDate: selectedDate ? selectedDate.toDateString() : "",
-    selectedTime: selectedTime,
-    vendors: [
-      { role: "Event Planner", name: "DJ Sajan" },
-      { role: "Service Provider Type", name: "Service Provider Name" },
-      { role: "Catering", name: "DJ Sajan" },
-      { role: "Catering", name: "DJ Sajan" },
-      { role: "Catering", name: "DJ Sajan" },
-    ],
-  };
-
+  // const mockVenueDetails = {
+  //   name: "GRAND BALLROOM @SHERATON",
+  //   location: "Bangkok, Thailand",
+  //   image: "",
+  //   selectedDate: selectedDate ? selectedDate.toDateString() : "",
+  //   selectedTime: selectedTime,
+  //   vendors: [
+  //     { role: "Event Planner", name: "DJ Sajan" },
+  //     { role: "Service Provider Type", name: "Service Provider Name" },
+  //     { role: "Catering", name: "DJ Sajan" },
+  //     { role: "Catering", name: "DJ Sajan" },
+  //     { role: "Catering", name: "DJ Sajan" },
+  //   ],
+  // };
   return (
     <div className="grid w-full h-full lg:grid-cols-2 gap-4">
       <div className="space-y-3">
@@ -68,11 +72,7 @@ const AddDetailsForm = () => {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="Enter your Email"
-                      {...field}
-                    />
+                    <Input type="email" placeholder="Enter your Email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -126,7 +126,7 @@ const AddDetailsForm = () => {
           Your Plan Visit Details
         </p>
         <div className="flex flex-col rounded-[12px] border border-black/15 p-6">
-          <VenueDetails details={mockVenueDetails} />
+          <VenueDetails venueDetails={venueDetails} vendors={vendors} selectedDate={selectedDate} />
         </div>
       </div>
     </div>

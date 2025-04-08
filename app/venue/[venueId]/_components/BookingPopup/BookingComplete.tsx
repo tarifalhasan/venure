@@ -80,7 +80,7 @@ const BookingComplete = ({ bookingId }: { bookingId?: string }) => {
             </h3>
             <Badge variant="secondary" className="mt-2">
               Booking ID: #
-              {bookingId || `${formData.venueId}-${Date.now().toString().slice(-6)}`}
+              {bookingId}
             </Badge>
           </div>
 

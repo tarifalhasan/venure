@@ -56,14 +56,14 @@ builder.Services.AddSwaggerGen(options =>
 var app = builder.Build();
 app.UseCors("AllowAll");
 // Enable Swagger for Development
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "Evenure API v1");
     });
-}
+//}
 
 // Middleware pipeline
 app.UseRouting(); // Ensure routing comes before endpoints

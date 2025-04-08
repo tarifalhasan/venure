@@ -21,7 +21,7 @@ interface DetailsProps {
 
 export const VenueImageSlider = ({ data }: { data: DetailsProps }) => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
-
+  console.log({ VenueImageSliderProps:data});
   const images = data.images;
   const totalImages = data.images.length;
   const [currentThumbIndex, setCurrentThumbIndex] = useState(0); // Track current thumb index
@@ -34,10 +34,7 @@ export const VenueImageSlider = ({ data }: { data: DetailsProps }) => {
           <div className="flex items-center text-gray-600 text-sm">
             <MapPin className="w-4 h-4 mr-1" />
             <span>{data?.venueaddress}</span>
-            <Button
-              variant="link"
-              className="text-blue-600 px-0 ml-2 flex items-center"
-            >
+            <Button variant="link" className="text-blue-600 px-0 ml-2 flex items-center">
               Show on Map
             </Button>
           </div>
@@ -64,20 +61,20 @@ export const VenueImageSlider = ({ data }: { data: DetailsProps }) => {
         navigation
         pagination={{ clickable: true }}
         thumbs={{
-          swiper:
-            thumbsSwiper && !(thumbsSwiper as any)?.destroyed
-              ? thumbsSwiper
-              : null,
+          swiper: thumbsSwiper && !(thumbsSwiper as any)?.destroyed ? thumbsSwiper : null,
         }}
         spaceBetween={20}
         slidesPerView={1}
         className="h-full w-full !pb-5 aspect-[16/12] lg:aspect-[16/8] rounded-none"
       >
-        {images?.map((image, index) => (
+        {images.filter((image) => Boolean(image))?.map((image, index) => (
           <SwiperSlide key={index}>
             <div className="relative w-full h-full">
               <Image
-                src={`${image}?auto=format&fit=crop&w=1200&h=400`}
+                src={
+                  `${image}?auto=format&fit=crop&w=1200&h=400` ||
+                  "/default-card-placeholder.png"
+                }
                 alt={`Venue image ${index + 1}`}
                 layout="fill"
                 objectFit="cover"

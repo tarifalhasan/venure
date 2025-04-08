@@ -32,6 +32,8 @@ import {
   useBookingConfirmMutation,
 } from "@/queries/mutations/bookingMutations";
 import { AxiosError } from "axios";
+// import type { VenueDetails } from "./VenueDetails";
+import type { Vendor, VenueDetails } from "@/types/venue";
 
 const steps = [
   { id: 1, label: "Booking Data", component: BookingDataForm },
@@ -58,9 +60,11 @@ export type FormValues = z.infer<typeof formSchema>;
 
 interface BookingModalPopupProps {
   venueId: number; // Add venueId as a prop
+  venueDetails?: VenueDetails;
+  vendors?:Vendor[];
 }
 
-export function BookingModalPopup({ venueId }: BookingModalPopupProps) {
+export function BookingModalPopup({ venueId, venueDetails, vendors }: BookingModalPopupProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [bookingResponse, setBookingResponse] = useState<BookingResponse | null>(null);
@@ -70,8 +74,8 @@ export function BookingModalPopup({ venueId }: BookingModalPopupProps) {
     mode: "onChange",
     defaultValues: {
       venueId,
-      vendorIds: [venueId, 1],
-      siteId: 1,
+      vendorIds: [...(vendors?.map((vendor) => vendor?.vendorid) as number[])],
+      siteId: venueDetails?.venueid,
       bookingType: "standard",
       requests: "",
     },
@@ -221,7 +225,7 @@ export function BookingModalPopup({ venueId }: BookingModalPopupProps) {
 
     const bookingRequest: BookingRequest = {
       venueId: data.venueId as number,
-      vendorIds: data.vendorIds as number[],
+      vendorIds: [...vendors?.map((vendor) => vendor?.vendorid) as number[]],
       bookingType: data.bookingType,
       bookingStartDate: startDate.toISOString(),
       bookingEndDate: endDate.toISOString(),
@@ -303,7 +307,11 @@ export function BookingModalPopup({ venueId }: BookingModalPopupProps) {
         <ScrollArea className="h-[80vh] md:h-[85vh] w-full p-4">
           <FormProvider {...methods}>
             <form onSubmit={handleSubmit(handleFinalSubmit)} id="booking-form">
-              <StepComponent />
+              {currentStep === 0|| currentStep === 1 ? (
+                <StepComponent venueDetails={venueDetails} vendors={vendors} />
+              ) : (
+                <StepComponent />
+              )}
             </form>
           </FormProvider>
         </ScrollArea>

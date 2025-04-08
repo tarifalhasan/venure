@@ -38,8 +38,12 @@ const timeSlots = [
   "07:30 PM",
   "08:00 PM",
 ];
-
-const BookingDataForm = () => {
+import type { Vendor, VenueDetails as TypeVenueDetails } from "@/types/venue";
+interface BookingModalPopupProps {
+  venueDetails?: TypeVenueDetails;
+  vendors?:Vendor[];
+}
+const BookingDataForm = ( { venueDetails, vendors }: BookingModalPopupProps) => {
   const { control, watch } = useFormContext();
   const selectedDate = watch("date");
   const selectedTime = watch("time");
@@ -123,7 +127,11 @@ const BookingDataForm = () => {
           Booking for Visitation
         </p>
         <div className="flex flex-col rounded-[12px] border border-black/15 p-6">
-          <VenueDetails details={mockVenueDetails} />
+          <VenueDetails
+            venueDetails={venueDetails}
+            vendors={vendors}
+            selectedDate={selectedDate}
+          />
         </div>
       </div>
     </div>
