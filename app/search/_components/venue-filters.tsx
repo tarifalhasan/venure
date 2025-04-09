@@ -6,14 +6,29 @@ import { Slider } from "@/components/ui/slider";
 import { Star } from "lucide-react";
 import { useState } from "react";
 import { VenueFilterInput } from "@/types/venue";
+import { useSearchParams } from "next/navigation";
+import { addDays } from "date-fns";
 
 interface VenueFiltersProps {
   onFilterChange: (filters: VenueFilterInput) => void;
 }
 
 export function VenueFilters({ onFilterChange }: VenueFiltersProps) {
+   const searchParams = useSearchParams();
+  
+    // Extract search parameters with fallbacks
+    const searchText = searchParams.get("searchText") || "";
+  
+    const startDate = searchParams.get("startDate") || new Date();
+    const endDate = searchParams.get("endDate") || addDays(new Date(), 1);
+    const venueType = searchParams.get("venueType") || "";
+    const currentPage = parseInt(searchParams.get("currentPage") || "1", 10);
+    const itemsPerPage = parseInt(searchParams.get("itemsPerPage") || "10", 10);
+  
   const [filters, setFilters] = useState<VenueFilterInput>({
-    venueType: "", // Maps to "setting", defaults to "" (visually "INDOOR")
+    searchText,
+    venueType,
+    destination: searchText,
     minAttendees: 0,
     maxAttendees: 10000,
     minSize: 0,
@@ -24,8 +39,10 @@ export function VenueFilters({ onFilterChange }: VenueFiltersProps) {
     maxRating: 5,
     adjustableSpace: true,
     features: [],
-    currentPage: 1,
-    itemsPerPage: 10,
+    startDate,
+    endDate,
+    currentPage,
+    itemsPerPage,
   });
 
   const featureOptions = [
