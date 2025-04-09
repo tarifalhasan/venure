@@ -24,6 +24,7 @@ export interface VenueCardProps {
   title: string;
   subtitle: string;
   imageUrl: string;
+  id: any;
 }
 
 export interface VenueFilterItem {
@@ -61,4 +62,3 @@ export interface VenueFilterCoverImage {
   imagePath: string;
   isCoverImage: boolean; // Assuming this is a typo for "isCoverImage"
 }
-

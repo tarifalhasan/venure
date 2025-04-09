@@ -47,6 +47,8 @@ export default function HomePage() {
     refetch: refetchDeals,
   } = useDealsVenuesQuery();
 
+  console.log(recommendedVenues);
+
   // 📌 Function to render sections while keeping the design intact
 
   {
@@ -85,7 +87,7 @@ export default function HomePage() {
             <CommonCard
               id={venue.venueid}
               title={venue.venuename}
-              imageUrl={venue.venueCoverImage}
+              imageUrl={venue.venueCoverImage || ""}
               subtitle={`${venue.siteName}, ${venue.siteCity}, ${venue.siteCountry}`}
             />
           )}

@@ -1,24 +1,15 @@
 "use client";
 
-import {
-  BellRing,
-  Cigarette,
-  Coffee,
-  Dumbbell,
-  Martini,
-  ParkingMeterIcon as Parking,
-  PocketIcon as Pool,
-  Utensils,
-  Wifi,
-} from "lucide-react";
+import React from "react";
+import { Bath, Cigarette, Dumbbell, ParkingCircle, BellRing, Utensils, Wifi, Coffee, Martini } from "lucide-react";
 
 export default function HotelFeatures({ venueFeatures }: { venueFeatures?: string[] }) {
   // Array of available icons for random selection
   const iconOptions = [
-    { Icon: Pool, name: "Pool" },
+    { Icon: Bath, name: "Pool" },
     { Icon: Cigarette, name: "Cigarette" },
     { Icon: Dumbbell, name: "Dumbbell" },
-    { Icon: Parking, name: "Parking" },
+    { Icon: ParkingCircle, name: "Parking" },
     { Icon: BellRing, name: "BellRing" },
     { Icon: Utensils, name: "Utensils" },
     { Icon: Wifi, name: "Wifi" },
@@ -54,8 +45,7 @@ export default function HotelFeatures({ venueFeatures }: { venueFeatures?: strin
           );
         })}
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4"></div>
     </div>
   );
-}
+};
+

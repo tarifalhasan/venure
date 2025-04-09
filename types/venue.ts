@@ -28,7 +28,7 @@ export interface Venue {
   siteName: string;
   siteCity: string;
   siteCountry: string;
-  venueCoverImage: string;
+  venueCoverImage: string | null;
 }
 
 export interface VenuesResponse {
@@ -38,9 +38,7 @@ export interface VenuesResponse {
   venues: Venue[];
 }
 
-
 // Venue DetailsSchema
-
 
 export interface SiteVendor {
   vendortype: string;
@@ -70,7 +68,6 @@ export interface VenueDetails {
   siteVendors: SiteVendor[];
 }
 
-
 //Reviews
 
 export interface Review {
@@ -89,7 +86,6 @@ export interface ReviewResponse {
   reviews: Review[];
 }
 
-
 export interface VenueFilterInput {
   searchText?: string; // Optional search text
   venueType: string; // Type of venue (e.g., "Banquet Hall")
@@ -103,8 +99,8 @@ export interface VenueFilterInput {
   minRating: number; // Minimum rating (e.g., 0 to 5)
   maxRating: number; // Maximum rating (e.g., 0 to 5)
   adjustableSpace: boolean; // Whether the venue has adjustable space
-  startDate?: string|Date; // Start date in ISO format (e.g., "2025-03-25T20:34:27.440Z")
-  endDate?: string|Date; // End date in ISO format (e.g., "2025-03-25T20:34:27.440Z")
+  startDate?: string | Date; // Start date in ISO format (e.g., "2025-03-25T20:34:27.440Z")
+  endDate?: string | Date; // End date in ISO format (e.g., "2025-03-25T20:34:27.440Z")
   features: number[]; // Array of feature IDs (assuming numbers represent feature IDs)
   currentPage: number; // Current page for pagination
   itemsPerPage: number; // Number of items per page for pagination

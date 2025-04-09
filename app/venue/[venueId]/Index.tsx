@@ -5,18 +5,21 @@ import { Navbar } from "@/components/common/navbar";
 import { VenueDetailsSkeleton } from "@/components/skeletons/venue-details-skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { useReviewsQuery } from "@/queries/reviewQueries";
+import { useVendorsQuery } from "@/queries/vendorsQueries";
 import { useVenueDetailsQuery } from "@/queries/venuesQueries";
 import type { VenueDetails } from "@/types/venue";
 import { BookingModalPopup } from "./_components/BookingPopup/BookingModal";
+import CTA from "./_components/CTA";
 import HotelFeatures from "./_components/Features";
 import { NavigationTabs } from "./_components/NavigationTabs";
+import NearbySection from "./_components/NearbySection";
 import Packages from "./_components/Packages";
-import Vendors from "./_components/Vendors";
 import Reviews from "./_components/Reviews";
+import SizeAndArea from "./_components/SizeAndArea";
 import SpaceSelector from "./_components/SpaceSelector";
+import Vendors from "./_components/Vendors";
 import { VenueImageSlider } from "./_components/VenueImageSlider";
 import VenueListing from "./_components/VenueListing";
-import { useVendorsQuery } from "@/queries/vendorsQueries";
 
 function VenueDetails({
   venueId,
@@ -54,6 +57,23 @@ function VenueDetails({
     return <ErrorSection title="Venue Details" refetch={refetchDetails} />;
   }
 
+  console.log(details, "details");
+  console.log(vendorsData, "vendors");
+
+  const featureData = [
+    {
+      icon: "https://yourcdn.com/icons/pool.svg",
+      label: "Outdoor swimming pool",
+    },
+    {
+      icon: "https://yourcdn.com/icons/wifi.svg",
+      label: "Free Wifi",
+    },
+    {
+      icon: "https://yourcdn.com/icons/parking.svg",
+      label: "Free parking",
+    },
+  ];
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar
@@ -119,7 +139,27 @@ function VenueDetails({
               </CardContent>
             </Card>
             <HotelFeatures venueFeatures={details?.venueFeatures}/>
-            <SpaceSelector />
+            {/* <SpaceSelector />
+            <HotelFeatures features={featureData} /> */}
+            <SpaceSelector
+              spaces={[
+                {
+                  url: "https://venue-media-bucket.s3.ap-southeast-1.amazonaws.com/venue-images/cover-images/1/luxury-ballroom-1.jpg",
+                  altText: "dummy aly",
+                  id: "120",
+                },
+                {
+                  url: "https://venue-media-bucket.s3.ap-southeast-1.amazonaws.com/venue-images/cover-images/1/luxury-ballroom-1.jpg",
+                  altText: "dummy aly",
+                  id: "120",
+                },
+                {
+                  url: "https://venue-media-bucket.s3.ap-southeast-1.amazonaws.com/venue-images/cover-images/1/luxury-ballroom-1.jpg",
+                  altText: "dummy aly",
+                  id: "120",
+                },
+              ]}
+            />
             {/* Packages & Food & Beverages */}
             <Packages />
 
@@ -135,6 +175,34 @@ function VenueDetails({
           <div className="lg:col-span-1">
             {/* <Sidebar /> */}
             <VenueListing  VenueDetails={details} />
+
+            <div className="space-y-6">
+              <NearbySection />
+              <SizeAndArea
+                totalArea={details?.venueheight}
+                ceilingHeight={details?.venueheight}
+                totalRooms={null}
+                peopleCount={3}
+              />
+              <CTA
+                buttonText="Plan a Free Site Visit"
+                startingPrice={details?.venueprice || ""}
+                addons={[
+                  {
+                    label: "Planner: Divine Events",
+                    onRemove: () => console.log("Remove Divine Events"),
+                  },
+                  {
+                    label: "Tito Catering",
+                    onRemove: () => console.log("Remove Tito Catering"),
+                  },
+                  {
+                    label: "DJ Sajan",
+                    onRemove: () => console.log("Remove DJ Sajan"),
+                  },
+                ]}
+              />
+            </div>
             <div className="pb-4" />
             <BookingModalPopup
               venueId={venueId as any}

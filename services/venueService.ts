@@ -1,6 +1,10 @@
-import { VenueFilter } from "./../types/search";
 // services/venueService.ts
-import type { VenueDetails, VenuesResponse,VenueFilterInput,VenueFilterResponse } from "@/types/venue";
+import type {
+  VenueDetails,
+  VenueFilterInput,
+  VenueFilterResponse,
+  VenuesResponse,
+} from "@/types/venue";
 import apiClient from "../lib/axios";
 
 // Venue service class
@@ -48,13 +52,17 @@ export class VenueService {
 
   //get-venue-details
   static async getVenueDetails(venueId: string): Promise<VenueDetails> {
-    const response = await apiClient.get<VenueDetails>(`/venue/get-venue-details/${venueId}`);
+    const response = await apiClient.get<VenueDetails>(
+      `/venue/get-venue-details/${venueId}`
+    );
     return response.data;
   }
 
   //venue VenueFilter
   // Updated method for filtered venues with POST request
-  static async getVenueFiltered(filter: VenueFilterInput): Promise<VenueFilterResponse> {
+  static async getVenueFiltered(
+    filter: VenueFilterInput
+  ): Promise<VenueFilterResponse> {
     const response = await apiClient.post<VenueFilterResponse>(
       "/venue/get-venue-filtered",
       filter
