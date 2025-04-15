@@ -1,12 +1,14 @@
 "use client";
 import { ImageCarousel } from "@/components/ui/image-carousel";
 import { MapPin, Star, Users } from "lucide-react";
+import Link from "next/link";
 import React from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 interface VenueCardProps {
+  id: string|number;
   name: string;
   location: string;
   type: string;
@@ -23,6 +25,7 @@ interface VenueCardProps {
 }
 
 const VenueCard: React.FC<VenueCardProps> = ({
+  id,
   name,
   location,
   type,
@@ -75,7 +78,9 @@ const VenueCard: React.FC<VenueCardProps> = ({
         <div className="flex-1 p-4 flex flex-col justify-between">
           {/* Venue Info */}
           <div className="space-y-1">
-            <h3 className="text-lg xl:text-xl text-foreground font-semibold">{name}</h3>
+            <h3 className="text-lg xl:text-xl text-foreground font-semibold">
+              <Link className="hover:underline" href={`/venue/${id}`}>{name}</Link>
+            </h3>
             <div className="inline-flex items-center gap-2">
               <MapPin size={16} />
               <p className="text-sm text-skin-shade_gray_900">{location}</p>

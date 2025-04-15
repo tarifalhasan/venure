@@ -115,6 +115,7 @@ export default function SearchResults() {
     return filteredVenues?.venues?.map((venue) => (
       <VenueCard
         key={venue.venueid}
+        id={venue.venueid}
         name={venue.venuename}
         location={venue.venueaddress}
         type={venue.venuetype}

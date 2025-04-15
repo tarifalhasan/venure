@@ -79,7 +79,8 @@ export function CommonPagination({
     params.set("itemsPerPage", itemsPerPage.toString());
 
     // Update the URL without reloading the page
-    router.push(`?${params.toString()}`);
+    // Use window.history.pushState to update the URL without reloading the page
+    window.history.pushState(null, "", `?${params.toString()}`);
 
     // Call the provided onPageChange callback
     onPageChange(page);
