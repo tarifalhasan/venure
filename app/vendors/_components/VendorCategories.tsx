@@ -21,6 +21,7 @@ import {
   Brush,
   Footprints,
 } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface VendorCategoriesProps {
   selectedCategory: string | null;
@@ -105,23 +106,25 @@ export function VendorCategories({
   ];
 
   return (
-    <div className="space-y-1 max-h-[100vh] overflow-y-auto pr-2">
-      {categories.map((category) => (
-        <button
-          key={category.id}
-          onClick={() =>
-            onCategoryChange(category.id === selectedCategory ? null : category.id)
-          }
-          className={`flex items-center gap-3 w-full text-left px-2 py-2 rounded-md text-sm transition-colors ${
-            selectedCategory === category.id
-              ? "bg-gray-100 text-gray-900 font-medium"
-              : "text-gray-700 hover:bg-gray-50"
-          }`}
-        >
-          <span className="text-gray-500">{category.icon}</span>
-          <span className="truncate">{category.name}</span>
-        </button>
-      ))}
+    <div className="space-y-1  pr-2">
+      <ScrollArea className="max-h-[520px]  overflow-y-auto bg-white">
+        {categories.map((category) => (
+          <button
+            key={category.id}
+            onClick={() =>
+              onCategoryChange(category.id === selectedCategory ? null : category.id)
+            }
+            className={`flex items-center gap-3 w-full text-left px-2 py-2 rounded-md text-sm transition-colors ${
+              selectedCategory === category.id
+                ? "bg-gray-100 text-gray-900 font-medium"
+                : "text-gray-700 hover:bg-gray-50"
+            }`}
+          >
+            <span className="text-gray-500">{category.icon}</span>
+            <span className="truncate">{category.name}</span>
+          </button>
+        ))}
+      </ScrollArea>
     </div>
   );
 }
