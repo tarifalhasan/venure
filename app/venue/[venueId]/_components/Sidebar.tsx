@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { X } from "lucide-react";
-import { BookingModalPopup } from "./BookingPopup/BookingModal";
+import BookingModalPopup from "./BookingPopup/BookingModal";
 
 export const Sidebar = () => {
   return (

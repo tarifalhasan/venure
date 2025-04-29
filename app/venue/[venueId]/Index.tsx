@@ -8,7 +8,7 @@ import { useReviewsQuery } from "@/queries/reviewQueries";
 import { useVendorsQuery } from "@/queries/vendorsQueries";
 import { useVenueDetailsQuery } from "@/queries/venuesQueries";
 import type { VenueDetails } from "@/types/venue";
-import { BookingModalPopup } from "./_components/BookingPopup/BookingModal";
+import BookingModalPopup from "./_components/BookingPopup/BookingModal";
 import CTA from "./_components/CTA";
 import HotelFeatures from "./_components/Features";
 import { NavigationTabs } from "./_components/NavigationTabs";
@@ -138,7 +138,7 @@ function VenueDetails({
                 </div>
               </CardContent>
             </Card>
-            <HotelFeatures venueFeatures={details?.venueFeatures}/>
+            <HotelFeatures venueFeatures={details?.venueFeatures} />
             {/* <SpaceSelector />
             <HotelFeatures features={featureData} /> */}
             <SpaceSelector
@@ -174,7 +174,7 @@ function VenueDetails({
           {/* Sidebar */}
           <div className="lg:col-span-1">
             {/* <Sidebar /> */}
-            <VenueListing  VenueDetails={details} />
+            <VenueListing VenueDetails={details} />
 
             <div className="space-y-6">
               <NearbySection />

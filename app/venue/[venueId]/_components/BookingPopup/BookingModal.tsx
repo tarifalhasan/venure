@@ -11,29 +11,29 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "@/hooks/use-toast";
+import {
+  useBookingConfirmMutation,
+  useBookingMutation,
+} from "@/queries/mutations/bookingMutations";
+import type { BookingRequest, BookingResponse } from "@/types/booking"; // Import the type
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AxiosError } from "axios";
 import {
   CheckIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  Loader,
   Loader2,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import * as z from "zod";
 import AddDetailsForm from "./AddDetailsForm";
 import BookingComplete from "./BookingComplete";
 import BookingDataForm from "./BookingDataForm";
 import OtpVerification from "./OtpVerification";
-import type { BookingRequest, BookingResponse } from "@/types/booking"; // Import the type
-import {
-  useBookingMutation,
-  useBookingConfirmMutation,
-} from "@/queries/mutations/bookingMutations";
-import { AxiosError } from "axios";
 // import type { VenueDetails } from "./VenueDetails";
 import type { Vendor, VenueDetails } from "@/types/venue";
+import dynamic from "next/dynamic";
 
 const steps = [
   { id: 1, label: "Booking Data", component: BookingDataForm },
@@ -61,13 +61,22 @@ export type FormValues = z.infer<typeof formSchema>;
 interface BookingModalPopupProps {
   venueId: number; // Add venueId as a prop
   venueDetails?: VenueDetails;
-  vendors?:Vendor[];
+  vendors?: Vendor[];
 }
 
-export function BookingModalPopup({ venueId, venueDetails, vendors }: BookingModalPopupProps) {
+function BookingModalPopup({
+  venueId,
+  venueDetails,
+  vendors,
+}: BookingModalPopupProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [bookingResponse, setBookingResponse] = useState<BookingResponse | null>(null);
+  const [bookingResponse, setBookingResponse] =
+    useState<BookingResponse | null>(null);
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const methods = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -90,38 +99,42 @@ export function BookingModalPopup({ venueId, venueDetails, vendors }: BookingMod
   } = methods;
 
   // Booking creation mutation
-  const { mutate: createBooking, isPending: isBookingPending } = useBookingMutation({
-    onSuccess: (data) => {
-      setBookingResponse(data);
-      toast({
-        title: "Booking created",
-        description: "Please verify your booking with the OTP sent to your email.",
-      });
-      setCurrentStep(2); // Move to OTP verification step
-    },
-    onError: (error: unknown) => {
-      console.log("Confirmation error:", error); // Log for debugging
-      let title = "Booking failed, please try again";
-      let description = "An unknown error occurred";
+  const { mutate: createBooking, isPending: isBookingPending } =
+    useBookingMutation({
+      onSuccess: (data) => {
+        setBookingResponse(data);
+        toast({
+          title: "Booking created",
+          description:
+            "Please verify your booking with the OTP sent to your email.",
+        });
+        setCurrentStep(2); // Move to OTP verification step
+      },
+      onError: (error: unknown) => {
+        console.log("Confirmation error:", error); // Log for debugging
+        let title = "Booking failed, please try again";
+        let description = "An unknown error occurred";
 
-      if (typeof error === "string") {
-        title = error;
-      } else if (error instanceof AxiosError) {
-        title = error.response?.data?.message || error.message || "Request failed";
-        description =
-          error.response?.data?.description || "An error occurred during the request";
-      } else if (error instanceof Error) {
-        title = error.message;
-        description = "An error occurred during the request";
-      }
+        if (typeof error === "string") {
+          title = error;
+        } else if (error instanceof AxiosError) {
+          title =
+            error.response?.data?.message || error.message || "Request failed";
+          description =
+            error.response?.data?.description ||
+            "An error occurred during the request";
+        } else if (error instanceof Error) {
+          title = error.message;
+          description = "An error occurred during the request";
+        }
 
-      toast({
-        title,
-        description,
-        variant: "destructive",
-      });
-    },
-  });
+        toast({
+          title,
+          description,
+          variant: "destructive",
+        });
+      },
+    });
 
   // Booking confirmation mutation
   const { mutate: confirmBooking, isPending: isConfirmPending } =
@@ -140,7 +153,8 @@ export function BookingModalPopup({ venueId, venueDetails, vendors }: BookingMod
         console.dir(error); // Deep inspection of the error object
 
         // Handle different error types
-        let errorTitle = "Confirmation failed, Please check your OTP and try again";
+        let errorTitle =
+          "Confirmation failed, Please check your OTP and try again";
         let errorDescription = "An unknown error occurred";
 
         if (typeof error === "string") {
@@ -225,7 +239,7 @@ export function BookingModalPopup({ venueId, venueDetails, vendors }: BookingMod
 
     const bookingRequest: BookingRequest = {
       venueId: data.venueId as number,
-      vendorIds: [...vendors?.map((vendor) => vendor?.vendorid) as number[]],
+      vendorIds: [...(vendors?.map((vendor) => vendor?.vendorid) as number[])],
       bookingType: data.bookingType,
       bookingStartDate: startDate.toISOString(),
       bookingEndDate: endDate.toISOString(),
@@ -281,7 +295,7 @@ export function BookingModalPopup({ venueId, venueDetails, vendors }: BookingMod
     }
   };
   const isLoading = isBookingPending || isConfirmPending;
-
+  if (!isClient) return null;
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
@@ -296,7 +310,9 @@ export function BookingModalPopup({ venueId, venueDetails, vendors }: BookingMod
             <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center gap-4">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
               <p className="text-sm font-medium text-foreground">
-                {currentStep === 1 ? "Creating your booking..." : "Verifying OTP..."}
+                {currentStep === 1
+                  ? "Creating your booking..."
+                  : "Verifying OTP..."}
               </p>
             </div>
           </div>
@@ -307,7 +323,7 @@ export function BookingModalPopup({ venueId, venueDetails, vendors }: BookingMod
         <ScrollArea className="h-[80vh] md:h-[85vh] w-full p-4">
           <FormProvider {...methods}>
             <form onSubmit={handleSubmit(handleFinalSubmit)} id="booking-form">
-              {currentStep === 0|| currentStep === 1 ? (
+              {currentStep === 0 || currentStep === 1 ? (
                 <StepComponent venueDetails={venueDetails} vendors={vendors} />
               ) : (
                 <StepComponent />
@@ -382,3 +398,7 @@ export function BookingModalPopup({ venueId, venueDetails, vendors }: BookingMod
     </Dialog>
   );
 }
+
+export default dynamic(() => Promise.resolve(BookingModalPopup), {
+  ssr: false,
+});
